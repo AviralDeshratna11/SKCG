@@ -1,0 +1,15 @@
+retrieval:
+  lexical_weight: 0.55
+  semantic_weight: 0.45
+  max_seed_symbols: 20
+  token_budget: 8000
+  traversal:
+    max_depth: 1
+    relation_weights:
+      CALLS: 1.0
+      REFERENCES: 0.8
+      IMPORTS: 0.5
+      INHERITS: 0.7
+      IMPLEMENTS: 0.7
+      OVERRIDES: 0.8
+      CONTAINS: 0.3

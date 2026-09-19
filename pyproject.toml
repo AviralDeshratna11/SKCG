@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sckg"
+version = "0.1.0"
+description = "Phase 1 Semantic Code Knowledge Graph MVP"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "neo4j>=5.20",
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+embeddings = ["sentence-transformers>=3.0,<6"]
+dev = ["pytest>=8.2", "ruff>=0.5", "mypy>=1.10"]
+parser = ["tree-sitter>=0.22", "tree-sitter-python>=0.21"]
+
+[project.scripts]
+sckg = "sckg.cli.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sckg"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+plugins = ["pydantic.mypy"]
+strict = true
+ignore_missing_imports = true

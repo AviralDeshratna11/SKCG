@@ -1,0 +1,44 @@
+schema_version: "0.1.0"
+nodes:
+  Repository:
+    key: id
+  File:
+    key: id
+    indexes: [repository_id, commit_id, normalized_path, language]
+  Symbol:
+    key: id
+    indexes: [repository_id, commit_id, qualified_name, kind, language]
+relationships:
+  CONTAINS:
+    source: Symbol
+    target: Symbol
+  DEFINES:
+    source: File
+    target: Symbol
+  REFERENCES:
+    source: Symbol
+    target: Symbol
+  CALLS:
+    source: Symbol
+    target: Symbol
+  IMPORTS:
+    source: Symbol
+    target: Symbol
+  INHERITS:
+    source: Symbol
+    target: Symbol
+  IMPLEMENTS:
+    source: Symbol
+    target: Symbol
+  OVERRIDES:
+    source: Symbol
+    target: Symbol
+  HAS_TYPE:
+    source: Symbol
+    target: Symbol
+future_relationships:
+  - EXPOSES_API
+  - CONSUMES_API
+  - DEPLOYS_AS
+  - OBSERVED_BY
+  - EVOLVES_TO

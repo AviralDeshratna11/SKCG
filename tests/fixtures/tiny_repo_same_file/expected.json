@@ -1,0 +1,11 @@
+{
+  "symbols": [
+    "service.validate_user",
+    "service.PaymentService",
+    "service.PaymentService.charge"
+  ],
+  "relations": [
+    ["service.PaymentService.charge", "CALLS", "service.validate_user"],
+    ["service.PaymentService", "CONTAINS", "service.PaymentService.charge"]
+  ]
+}

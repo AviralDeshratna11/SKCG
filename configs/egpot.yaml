@@ -1,0 +1,53 @@
+egpot:
+  beam_width: 5
+  max_hops: 5
+  mcts_enabled: true
+  simulation_budget: 64
+  ucb_c: 1.4
+  # semantic, hop efficiency, contract, information gain (maximized)
+  objective_weights: [1.0, 1.0, 1.0, 1.0]
+  hub_degree_threshold: 10
+  embedding_provider: sentence-transformers
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  embedding_local_files_only: false
+
+  seed:
+    max_seeds: 3
+
+  semantic:
+    enabled: true
+
+  hop:
+    enabled: true
+    lambda: 0.15
+
+  contract:
+    enabled: true
+    exact_score: 1.0
+    unknown_score: 0.6
+
+  entropy:
+    enabled: true
+
+  novelty:
+    enabled: true
+
+  pareto:
+    enabled: true
+    epsilon: 1e-8
+    crowding: true
+
+  traversal:
+    allowed_edges:
+      - CALLS
+      - REFERENCES
+      - IMPORTS
+      - INHERITS
+      - IMPLEMENTS
+      - OVERRIDES
+
+  hub_suppression:
+    enabled: true
+
+  context:
+    token_budget: 8192
