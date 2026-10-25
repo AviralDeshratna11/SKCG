@@ -21,6 +21,7 @@ from sckg.retrieval.egpot.pareto import extract_pareto_frontier, non_dominated_s
 from sckg.retrieval.seeds import Seed
 from sckg.retrieval.semantic import EmbeddingProvider
 from sckg.retrieval.egpot.mcts import BeamMCTS
+from sckg.retrieval.egpot.adjacency import Adjacency
 
 
 class EGPOTTraverser:
@@ -46,10 +47,11 @@ class EGPOTTraverser:
         if max_depth < 0 or width < 1 or budget < 1:
             raise ValueError("max_hops must be nonnegative; beam_width and token_budget positive")
         self.objectives = ObjectiveEvaluator(self.store, self.config, self.provider)
+        self.adjacency = Adjacency(self.store)
         seeds = [seed for seed in seed_nodes
                  if not self.objectives.hubs.is_hub(seed.symbol.id)
                  and self._estimate_tokens(Trajectory((seed.symbol,))) <= budget][
-                     : self.config.seed_max_seeds]
+                     : min(self.config.seed_max_seeds, self.config.node_budget or self.config.seed_max_seeds)]
         beam = [
             TraversalState(Trajectory((seed.symbol,)), ObjectiveVector(seed.semantic_score, 0.0, 1.0, 0.0))
             for seed in seeds
@@ -86,12 +88,26 @@ class EGPOTTraverser:
                     stop_reason = StopReason.TOKEN_BUDGET
                     continue
                 candidates.append(candidate_state)
+            # Allocate finite admission budgets by objective quality rather than
+            # relation-name/ID ordering. Evaluating neighbors is not node admission.
+            candidates.sort(key=lambda s: (-sum(w * v for w, v in zip(
+                self.config.objective_weights, s.objective_vector.values(), strict=True)),
+                s.trajectory.node_ids))
+            admitted = []
+            for candidate_state in candidates:
+                candidate = candidate_state.current_node
+                relation = candidate_state.trajectory.hops[-1].relation
+                if (self.config.node_budget is not None and candidate.id not in visited_nodes
+                        and len(visited_nodes) >= self.config.node_budget):
+                    stop_reason = StopReason.NODE_BUDGET
+                    continue
+                admitted.append(candidate_state)
                 all_candidates.append(candidate_state)
                 visited_nodes[candidate.id] = candidate
                 visited_edges[relation.id] = relation
-                objective_scores[candidate.id] = vector
-                entropy_values[candidate.id] = entropy
-            return candidates
+                objective_scores[candidate.id] = candidate_state.objective_vector
+                entropy_values[candidate.id] = float(candidate_state.metadata["entropy"])
+            return admitted
 
         mcts: BeamMCTS | None = None
         with Timer() as timer:
@@ -99,14 +115,14 @@ class EGPOTTraverser:
                 mcts = BeamMCTS(self.config, max_depth, width)
                 beam = mcts.search(beam, expand)
                 trace = mcts.trace
-                if stop_reason != StopReason.TOKEN_BUDGET:
+                if stop_reason not in {StopReason.TOKEN_BUDGET, StopReason.NODE_BUDGET}:
                     stop_reason = (StopReason.MAX_HOPS if any(s.depth == max_depth for s in beam)
                                    else StopReason.NO_CANDIDATES)
             else:
                 for depth in range(max_depth):
                     candidates = [candidate for state in beam for candidate in expand(state)]
                     if not candidates:
-                        if stop_reason != StopReason.TOKEN_BUDGET:
+                        if stop_reason not in {StopReason.TOKEN_BUDGET, StopReason.NODE_BUDGET}:
                             stop_reason = StopReason.NO_CANDIDATES
                         break
                     fronts = (non_dominated_sort(candidates, self.config.pareto_epsilon)
@@ -149,6 +165,7 @@ class EGPOTTraverser:
             traversal_time=timer.elapsed,
             stop_reason=stop_reason,
             debug={"trace": trace, "mcts_enabled": self.config.mcts_enabled,
+                   "node_budget": self.config.node_budget, "direction": self.config.direction,
                    "simulations": mcts.simulations if mcts else 0,
                    "tree": mcts.statistics() if mcts else [],
                    "embedding_provider": self.config.embedding_provider,
@@ -180,17 +197,26 @@ class EGPOTTraverser:
         return output
 
     def _expand(self, symbol: Symbol) -> list[tuple[Relation, Symbol]]:
-        _, relations = self.store.get_neighbors(symbol.id, list(self.config.allowed_edges), depth=1)
+        relations = self.adjacency.edges(symbol.id)
         expanded: list[tuple[Relation, Symbol]] = []
+        seen: set[tuple[str, object]] = set()
         for relation in sorted(relations, key=lambda item: (item.relation_type.value, item.id)):
+            if relation.relation_type not in self.config.allowed_edges:
+                continue
+            if self.config.direction == "outgoing" and relation.source_symbol_id != symbol.id:
+                continue
+            if self.config.direction == "incoming" and relation.target_symbol_id != symbol.id:
+                continue
             target_id = (
                 relation.target_symbol_id
                 if relation.source_symbol_id == symbol.id
                 else relation.source_symbol_id
             )
             target = self._get_symbol_by_id(target_id)
-            if target is not None and not self.objectives.hubs.is_hub(target.id):
+            key = (target_id, relation.relation_type)
+            if target is not None and key not in seen and not self.objectives.hubs.is_hub(target.id):
                 expanded.append((relation, target))
+                seen.add(key)
         return expanded
 
     def _get_symbol_by_id(self, symbol_id: str) -> Symbol | None:

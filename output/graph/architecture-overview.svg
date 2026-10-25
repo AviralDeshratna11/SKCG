@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+  <title id="title">SCKG GRAFT build and EG-POT traversal architecture</title>
+  <desc id="desc">Source repositories feed six GRAFT graph layers, an LNIR adapter, a graph store, and EG-POT retrieval with semantic, hop, contract, and entropy objectives.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#64748b" stroke-width="1.6"/></marker>
+    <style>
+      .title{font:700 34px Arial,sans-serif;fill:#0f172a}.sub{font:16px Arial,sans-serif;fill:#475569}
+      .step{font:700 19px Arial,sans-serif;fill:#0f172a}.body{font:14px Arial,sans-serif;fill:#475569}
+      .chip{font:700 15px Arial,sans-serif;fill:#1e293b}.small{font:13px Arial,sans-serif;fill:#475569}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="820" fill="#f8fafc"/>
+  <rect x="35" y="30" width="1370" height="760" rx="24" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="75" y="88" class="title">SCKG: GRAFT build + EG-POT traversal</text>
+  <text x="75" y="120" class="sub">Layered code graph construction feeds paper 2's bounded, multi-objective graph search.</text>
+
+  <rect x="75" y="170" width="252" height="120" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="101" y="208" class="step">Source repositories</text>
+  <text x="101" y="237" class="body">Python · Go · JS/TS · Protobuf</text>
+  <text x="101" y="263" class="body">Single repo or workspace YAML</text>
+  <path d="M328 230 H390" class="arrow"/>
+
+  <rect x="395" y="170" width="300" height="120" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="421" y="208" class="step">GRAFT construction</text>
+  <text x="421" y="237" class="body">Parse · resolve · compose</text>
+  <text x="421" y="263" class="body">Preserve typed, directed edges</text>
+  <path d="M696 230 H757" class="arrow"/>
+
+  <rect x="762" y="170" width="260" height="120" rx="16" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text x="788" y="208" class="step">LNIR adapter</text>
+  <text x="788" y="237" class="body">Stable IDs · provenance</text>
+  <text x="788" y="263" class="body">Layer + hyperedge metadata</text>
+  <path d="M1023 230 H1084" class="arrow"/>
+
+  <rect x="1089" y="170" width="275" height="120" rx="16" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="1115" y="208" class="step">Graph store</text>
+  <text x="1115" y="237" class="body">JSON or Neo4j</text>
+  <text x="1115" y="263" class="body">Traversal + visualization</text>
+
+  <text x="75" y="335" class="step">Construction layers</text>
+  <rect x="75" y="352" width="200" height="70" rx="12" fill="#dbeafe"/>
+  <text x="94" y="380" class="chip">Lsyn</text><text x="94" y="405" class="small">Containment · imports</text>
+  <rect x="290" y="352" width="200" height="70" rx="12" fill="#dcfce7"/>
+  <text x="309" y="380" class="chip">Ldep</text><text x="309" y="405" class="small">Calls · inheritance</text>
+  <rect x="505" y="352" width="200" height="70" rx="12" fill="#fef3c7"/>
+  <text x="524" y="380" class="chip">Lflow</text><text x="524" y="405" class="small">Defines · uses · flows</text>
+  <rect x="720" y="352" width="200" height="70" rx="12" fill="#fce7f3"/>
+  <text x="739" y="380" class="chip">Lsem</text><text x="739" y="405" class="small">Semantic similarity</text>
+  <rect x="935" y="352" width="200" height="70" rx="12" fill="#ede9fe"/>
+  <text x="954" y="380" class="chip">Lcontract</text><text x="954" y="405" class="small">RPC · producer · consumer</text>
+  <rect x="1150" y="352" width="214" height="70" rx="12" fill="#ccfbf1"/>
+  <text x="1169" y="380" class="chip">Llineage · optional</text><text x="1169" y="405" class="small">Git commit touches</text>
+
+  <path d="M1365 230 H1380 V450 H50 V566 H74" class="arrow"/>
+  <text x="75" y="485" class="step">Paper 2: EG-POT retrieval</text>
+  <rect x="75" y="510" width="230" height="112" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="99" y="548" class="step">Query localization</text>
+  <text x="99" y="579" class="body">Lexical + semantic seeds</text>
+  <path d="M306 566 H354" class="arrow"/>
+  <rect x="359" y="510" width="300" height="112" rx="16" fill="#fefce8" stroke="#fde047" stroke-width="2"/>
+  <text x="383" y="548" class="step">Four objectives</text>
+  <text x="383" y="578" class="body">Semantic · hop · contract · entropy</text>
+  <text x="383" y="601" class="body">Novelty discounts redundant context</text>
+  <path d="M660 566 H708" class="arrow"/>
+  <rect x="713" y="510" width="300" height="112" rx="16" fill="#fff1f2" stroke="#fda4af" stroke-width="2"/>
+  <text x="737" y="548" class="step">Pareto + Beam-MCTS</text>
+  <text x="737" y="578" class="body">Non-dominated paths</text>
+  <text x="737" y="601" class="body">Bounded hops, beam, simulations</text>
+  <path d="M1014 566 H1062" class="arrow"/>
+  <rect x="1067" y="510" width="297" height="112" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="1091" y="548" class="step">Context + trace</text>
+  <text x="1091" y="578" class="body">Selected path subgraph</text>
+  <text x="1091" y="601" class="body">Token budget + explanation</text>
+
+  <rect x="75" y="663" width="1289" height="82" rx="14" fill="#f1f5f9"/>
+  <text x="99" y="695" class="chip">Example path in the generated workspace graph</text>
+  <text x="99" y="724" class="body">Web checkout  →  HTTP_CALLS  →  order service  →  CONSUMES  →  ShippingService.GetQuote  ←  IMPLEMENTS  ←  shipping server</text>
+</svg>

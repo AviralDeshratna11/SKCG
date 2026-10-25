@@ -27,11 +27,13 @@ class SearchNode:
 class BeamMCTS:
     """Budget is simulations per query, each bounded by max_hops.
 
-    Each expansion keeps only the first non-dominated front, crowding-pruned to
-    beam_width. PUCT selects visited-tree branches; an unvisited branch rolls out
+    Each expansion reserves representatives of explicit graph layers, then fills
+    beam_width from the first non-dominated front. PUCT selects visited-tree
+    branches; an unvisited branch rolls out
     greedily by scalarized terminal value. The same tree stores rollout nodes, so
     later simulations can explore alternatives. Terminal reward is backpropagated
-    to every ancestor. Output is the best sampled terminal paths, not a global
+    to every ancestor. Output includes useful sampled intermediate stopping paths,
+    not a global
     optimality guarantee: Pareto/beam pruning and finite budgets can miss paths.
     """
 
@@ -54,6 +56,27 @@ class BeamMCTS:
                   if self.config.pareto_enabled else [states])
         survivors = (select_by_fronts(fronts[:1], self.width) if self.config.crowding_enabled
                      else sorted(fronts[0], key=lambda s: (-self.value(s), s.trajectory.node_ids))[:self.width])
+        if self.config.pareto_enabled:
+            # A low-semantic interface or dataflow bridge can be dominated before
+            # its implementation is visible. Reserve one Pareto representative per
+            # explicit graph layer before filling remaining beam slots globally.
+            layers: dict[str, list[TraversalState]] = {}
+            for state in states:
+                if not state.trajectory.hops:
+                    continue
+                layer = str(state.trajectory.hops[-1].relation.metadata.get("layer") or "")
+                if layer:
+                    layers.setdefault(layer, []).append(state)
+            representatives = []
+            for layer in sorted(layers):
+                local = non_dominated_sort(layers[layer], self.config.pareto_epsilon)[0]
+                representatives.append(max(local, key=lambda s: (self.value(s), s.trajectory.node_ids)))
+            if representatives:
+                representatives.sort(key=lambda s: (-self.value(s), s.trajectory.node_ids))
+                kept = representatives[:self.width]
+                keys = {s.trajectory.node_ids for s in kept}
+                survivors = kept + [s for s in survivors if s.trajectory.node_ids not in keys][
+                    :max(0, self.width - len(kept))]
         peak = max(self.value(s) for s in survivors)
         priors = [math.exp(self.value(s) - peak) for s in survivors]
         total = sum(priors)
@@ -101,6 +124,10 @@ class BeamMCTS:
             for ancestor in path:
                 ancestor.visits += 1
                 ancestor.value_sum += reward
+                # Stopping at a useful intermediate function is a valid action.
+                # Root-only paths are retained only when no hop is possible.
+                if ancestor.state.depth:
+                    terminals[ancestor.state.trajectory.node_ids] = ancestor.state
             terminals[node.state.trajectory.node_ids] = node.state
             self.simulations += 1
         return sorted(terminals.values(), key=lambda s: (

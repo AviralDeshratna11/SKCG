@@ -1,0 +1,74 @@
+{
+  "graph_sha256": "d702bd214123f5b47c46bcc6ab2e2cdf39ead0cb26b7fd7ef55297c4145d8c14",
+  "queries_sha256": "a627a5eac7f21969689d82a3797c08dd2d871c27080123ba578ffb86f3c03b10",
+  "provider": "hashing",
+  "model": "blake2-256",
+  "methods": [
+    "vector",
+    "vector_bfs_2",
+    "vector_bfs_3",
+    "vector_bfs_4",
+    "vector_bfs_5",
+    "ppr",
+    "beam",
+    "greedy",
+    "community",
+    "standard_mcts",
+    "egpot",
+    "weighted_sum",
+    "no_entropy",
+    "no_contracts",
+    "no_mcts",
+    "expanded_budget"
+  ],
+  "budgets": [
+    20,
+    40,
+    60,
+    100,
+    200
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "audit": {
+    "nodes": 1794,
+    "edges": 5155,
+    "parallel_edges": 1534,
+    "relations": {
+      "CONTAINS": 299,
+      "DEFINES_RPC": 48,
+      "IMPORTS": 267,
+      "SEMANTIC_SIMILAR": 60,
+      "CALLS": 1061,
+      "DEFINES": 509,
+      "USES": 2166,
+      "PASSES_ARG": 326,
+      "RETURNS": 200,
+      "MUTATES": 57,
+      "CONSUMES": 21,
+      "FLOWS_TO": 120,
+      "EXTENDS": 12,
+      "IMPLEMENTS": 9
+    },
+    "layers": {
+      "Lsyn": 310,
+      "Lcontract": 26,
+      "Ldep": 475,
+      "Lflow": 983
+    },
+    "missing_source_text": 1794,
+    "missing_confidence": 0,
+    "contract_edges": 78
+  },
+  "budget_definition": "distinct admitted nodes including common start; embedding scoring is global",
+  "expanded_budget": "2x listed budget, report effective_budget explicitly",
+  "seed_note": "EG-POT is deterministic; repeated seeds are repetitions, not independent samples",
+  "latency_note": "Louvain partition and embedding matrix preprocessing excluded; per-query scoring included on first use",
+  "gold_used_by_algorithms": false,
+  "unreachable_targets": []
+}

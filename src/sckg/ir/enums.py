@@ -12,6 +12,8 @@ class Language(StrEnum):
     JAVA = "java"
     GO = "go"
     UNKNOWN = "unknown"
+    PROTOBUF = "protobuf"
+    CSHARP = "csharp"
 
 
 class SymbolKind(StrEnum):
@@ -30,6 +32,7 @@ class SymbolKind(StrEnum):
     TYPE = "type"
     IMPORT = "import"
     CODE_CHUNK = "code_chunk"
+    COMMIT = "commit"
 
 
 class RelationType(StrEnum):
@@ -42,6 +45,18 @@ class RelationType(StrEnum):
     IMPLEMENTS = "IMPLEMENTS"
     OVERRIDES = "OVERRIDES"
     HAS_TYPE = "HAS_TYPE"
+    PASSES_ARG = "PASSES_ARG"
+    RETURNS = "RETURNS"
+    FLOWS_TO = "FLOWS_TO"
+    MUTATES = "MUTATES"
+    USES = "USES"
+    EXTENDS = "EXTENDS"
+    POLYMORPHIC_CALL = "POLYMORPHIC_CALL"
+    HTTP_CALLS = "HTTP_CALLS"
+    CONSUMES = "CONSUMES"
+    DEFINES_RPC = "DEFINES_RPC"
+    SEMANTIC_SIMILAR = "SEMANTIC_SIMILAR"
+    TOUCHES = "TOUCHES"
 
 
 class Provenance(StrEnum):

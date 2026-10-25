@@ -11,6 +11,8 @@ class EGPOTConfig:
     beam_width: int = 5
     max_hops: int = 5
     token_budget: int = 8192
+    node_budget: int | None = None
+    direction: str = "both"
     seed_max_seeds: int = 3
     semantic_enabled: bool = True
     hop_enabled: bool = True
@@ -35,15 +37,33 @@ class EGPOTConfig:
     allowed_edges: tuple[RelationType, ...] = field(
         default_factory=lambda: (
             RelationType.CALLS,
+            RelationType.CONTAINS,
+            RelationType.DEFINES,
             RelationType.REFERENCES,
             RelationType.IMPORTS,
             RelationType.INHERITS,
             RelationType.IMPLEMENTS,
             RelationType.OVERRIDES,
+            RelationType.EXTENDS,
+            RelationType.POLYMORPHIC_CALL,
+            RelationType.HTTP_CALLS,
+            RelationType.CONSUMES,
+            RelationType.DEFINES_RPC,
+            RelationType.PASSES_ARG,
+            RelationType.RETURNS,
+            RelationType.FLOWS_TO,
+            RelationType.MUTATES,
+            RelationType.USES,
+            RelationType.SEMANTIC_SIMILAR,
+            RelationType.TOUCHES,
         )
     )
 
     def __post_init__(self) -> None:
+        if self.node_budget is not None and self.node_budget < 1:
+            raise ValueError("node_budget must be positive")
+        if self.direction not in {"both", "outgoing", "incoming"}:
+            raise ValueError("direction must be both, outgoing, or incoming")
         for name in ("beam_width", "token_budget", "seed_max_seeds", "simulation_budget",
                      "hub_degree_threshold"):
             if getattr(self, name) < 1:
@@ -80,6 +100,8 @@ class EGPOTConfig:
         if isinstance(traversal, dict) and isinstance(traversal.get("allowed_edges"), list):
             allowed_edges = tuple(RelationType(item) for item in traversal["allowed_edges"])
         return cls(
+            node_budget=int(egpot["node_budget"]) if egpot.get("node_budget") is not None else None,
+            direction=str(traversal.get("direction", "both")) if isinstance(traversal, dict) else "both",
             mcts_enabled=bool(egpot.get("mcts_enabled", cls.mcts_enabled)),
             simulation_budget=int(egpot.get("simulation_budget", cls.simulation_budget)),
             ucb_c=float(egpot.get("ucb_c", cls.ucb_c)),

@@ -12,6 +12,7 @@ class StopReason(StrEnum):
     MAX_HOPS = "MAX_HOPS"
     NO_CANDIDATES = "NO_CANDIDATES"
     TOKEN_BUDGET = "TOKEN_BUDGET"
+    NODE_BUDGET = "NODE_BUDGET"
 
 
 class ContractStatus(StrEnum):

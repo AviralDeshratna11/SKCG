@@ -20,6 +20,18 @@ from sckg.utils.config import load_yaml
 app = typer.Typer(help="Semantic Code Knowledge Graph CLI")
 
 
+@app.command("import-graph")
+def import_graph_export(path: Annotated[Path, typer.Argument(exists=True)]) -> None:
+    """Load a downloaded /api/graph or GRAFT JSON export into the selected store."""
+    from sckg.graph.import_graph import import_graph, audit_graph
+    document = import_graph(path)
+    store = make_store()
+    if not isinstance(store, JsonGraphStore):
+        raise typer.BadParameter("import-graph currently requires the JSON store")
+    store.replace_document(document)
+    typer.echo(json.dumps(audit_graph(document), indent=2))
+
+
 def make_store() -> GraphStore:
     if os.getenv("SCKG_STORE", "json").lower() == "neo4j":
         from sckg.graph.neo4j_store import Neo4jGraphStore
@@ -38,8 +50,16 @@ def _print_symbols(symbols) -> None:
 
 
 @app.command()
-def index(repo: Annotated[Path, typer.Argument(exists=True, file_okay=False)]) -> None:
-    report = IndexingPipeline(make_store()).index(repo)
+def index(
+    repo: Annotated[Path, typer.Argument(exists=True)] ,
+    architecture: str = typer.Option("lnir", help="lnir or graft"),
+    workspace: bool = typer.Option(False, help="Treat path as a GRAFT workspace YAML file"),
+    lineage: bool = typer.Option(False, help="Add Git commit TOUCHES edges to a GRAFT graph"),
+    max_commits: int = typer.Option(200, help="Maximum Git commits for lineage"),
+) -> None:
+    pipeline = IndexingPipeline(make_store(), {"architecture": architecture,
+                                              "lineage": lineage, "max_commits": max_commits})
+    report = pipeline.index_workspace(repo) if workspace else pipeline.index(repo)
     typer.echo(
         f"indexed files={report.build.files} symbols={report.build.symbols} "
         f"relations={report.build.relations}"
@@ -113,6 +133,8 @@ def retrieve(
     strategy: str = "hybrid",
     max_hops: int | None = None,
     beam_width: int | None = None,
+    node_budget: int | None = None,
+    direction: str | None = None,
     explain: bool = False,
     trace: Path | None = None,
     config: Path | None = None,
@@ -133,9 +155,15 @@ def retrieve(
         "hub_suppression_enabled": suppress_hubs, "hub_degree_threshold": hub_degree_threshold,
         "embedding_provider": "hashing" if use_hash_sim else embedding_provider,
         "mcts_enabled": mcts, "simulation_budget": simulation_budget, "ucb_c": ucb_c,
+        "node_budget": node_budget,
     }.items():
         if value is not None:
             egpot[key] = value
+    if direction is not None:
+        traversal = egpot.setdefault("traversal", {})
+        if not isinstance(traversal, dict):
+            raise typer.BadParameter("egpot.traversal config must be a mapping")
+        traversal["direction"] = direction
     result = RetrievalPipeline(store, repo.resolve(), settings).retrieve(
         issue,
         token_budget,

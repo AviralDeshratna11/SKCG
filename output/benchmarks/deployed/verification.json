@@ -1,0 +1,300 @@
+{
+  "audit": {
+    "nodes": 3137,
+    "edges": 7898,
+    "parallel_edges": 1644,
+    "relations": {
+      "IMPORTS": 672,
+      "CONTAINS": 489,
+      "DEFINES": 743,
+      "USES": 2670,
+      "RETURNS": 529,
+      "CALLS": 2110,
+      "FLOWS_TO": 254,
+      "PASSES_ARG": 393,
+      "MUTATES": 32,
+      "POLYMORPHIC_CALL": 2,
+      "EXTENDS": 4
+    },
+    "layers": {
+      "Lsyn": 601,
+      "Ldep": 888,
+      "Lflow": 1648
+    },
+    "missing_source_text": 3137,
+    "missing_confidence": 7898,
+    "contract_edges": 0
+  },
+  "structural_checks": [
+    {
+      "relation": "CALLS",
+      "direction": "both",
+      "visited": 9,
+      "selected": 4,
+      "stop_reason": "MAX_HOPS",
+      "passed": true
+    },
+    {
+      "relation": "CALLS",
+      "direction": "incoming",
+      "visited": 3,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "CALLS",
+      "direction": "outgoing",
+      "visited": 5,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "CONTAINS",
+      "direction": "both",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "CONTAINS",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "CONTAINS",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "DEFINES",
+      "direction": "both",
+      "visited": 6,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "DEFINES",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "DEFINES",
+      "direction": "outgoing",
+      "visited": 6,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "EXTENDS",
+      "direction": "both",
+      "visited": 5,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "EXTENDS",
+      "direction": "incoming",
+      "visited": 5,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "EXTENDS",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "FLOWS_TO",
+      "direction": "both",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "FLOWS_TO",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "FLOWS_TO",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "IMPORTS",
+      "direction": "both",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "IMPORTS",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "IMPORTS",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "MUTATES",
+      "direction": "both",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "MUTATES",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "MUTATES",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "PASSES_ARG",
+      "direction": "both",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "PASSES_ARG",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "PASSES_ARG",
+      "direction": "outgoing",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "POLYMORPHIC_CALL",
+      "direction": "both",
+      "visited": 3,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "POLYMORPHIC_CALL",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "POLYMORPHIC_CALL",
+      "direction": "outgoing",
+      "visited": 3,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "RETURNS",
+      "direction": "both",
+      "visited": 3,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "RETURNS",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "RETURNS",
+      "direction": "outgoing",
+      "visited": 3,
+      "selected": 3,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "USES",
+      "direction": "both",
+      "visited": 6,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "USES",
+      "direction": "incoming",
+      "visited": 2,
+      "selected": 2,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    },
+    {
+      "relation": "USES",
+      "direction": "outgoing",
+      "visited": 6,
+      "selected": 5,
+      "stop_reason": "NO_CANDIDATES",
+      "passed": true
+    }
+  ],
+  "end_to_end": {
+    "passed": true,
+    "ranked_symbols": 7,
+    "context": "Repository Context\n\nRelevant Symbols:\n- worker/index.ts::external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce (function, score=1.214) - connected by CALLS (HEURISTIC, 0.60); direct seed match\n- worker/index.ts::external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter (function, score=0.957) - direct seed match\n- app/api/create-order/route.ts::app/api/create-order/route.ts:POST.var::status (variable, score=0.844) - connected by DEFINES (HEURISTIC, 0.60); direct seed match\n- app/api/admin/overview/route.ts::app/api/admin/overview/route.ts:GET (function, score=0.452) - ranked by graph relevance\n- app/api/admin/overview/route.ts::app/api/admin/overview/route.ts:firstRelated (function, score=0.440) - connected by CALLS (HEURISTIC, 0.60)\n- app/api/create-order/route.ts::app/api/create-order/route.ts:POST (function, score=0.212) - ranked by graph relevance\n- app/api/admin/overview/route.ts::app/api/admin/overview/route.ts:GET.var::payment (variable, score=0.074) - connected by DEFINES (HEURISTIC, 0.60)\n\nRelations:\n- app/api/create-order/route.ts:POST DEFINES -> app/api/create-order/route.ts:POST.var::status [HEURISTIC, 0.60]\n- app/api/admin/overview/route.ts:GET CALLS -> external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce [HEURISTIC, 0.60]\n- app/api/admin/overview/route.ts:GET CALLS -> app/api/admin/overview/route.ts:firstRelated [HEURISTIC, 0.60]\n- app/api/admin/overview/route.ts:GET DEFINES -> app/api/admin/overview/route.ts:GET.var::payment [HEURISTIC, 0.60]\n\nRelevant Code:\n\nEstimated tokens: 127/8192"
+  },
+  "limitation": "Structural compatibility only. No semantic ground truth or source snippets were supplied by the endpoint."
+}

@@ -1,0 +1,597 @@
+{
+  "description": "30 source-checked queries, 15 links, 10 producer handlers. Fixed split; no tuning performed.",
+  "label_source": ".reference-sckg-build\\bench\\labels\\online_boutique_contracts.json",
+  "graph_source": ".reference-sckg-build\\online_boutique_graph.json",
+  "source_commit": "38e7348eb289eb5b87c0c6e8cb19ced0449dc389",
+  "limitation": "Existing graph export and current source may differ in line locations; graph not rebuilt. Expected contract paths can contain missing graph edges; these are graph gaps, not injected edges.",
+  "evidence": {
+    "frontend/rpc.go:frontendServer.getCurrencies": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 30,
+      "source_occurrence_lines": [
+        30
+      ]
+    },
+    "currencyservice/server.js:getSupportedCurrencies": {
+      "source": "tmp\\online-boutique\\src\\currencyservice\\server.js",
+      "graph_line": 128,
+      "source_occurrence_lines": [
+        128,
+        185
+      ]
+    },
+    "frontend/rpc.go:frontendServer.convertCurrency": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 77,
+      "source_occurrence_lines": [
+        77,
+        95
+      ]
+    },
+    "currencyservice/server.js:convert": {
+      "source": "tmp\\online-boutique\\src\\currencyservice\\server.js",
+      "graph_line": 138,
+      "source_occurrence_lines": [
+        138,
+        185
+      ]
+    },
+    "frontend/rpc.go:frontendServer.getProducts": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 45,
+      "source_occurrence_lines": [
+        45
+      ]
+    },
+    "productcatalogservice/product_catalog.go:productCatalog.ListProducts": {
+      "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+      "graph_line": 41,
+      "source_occurrence_lines": [
+        30,
+        41,
+        44
+      ]
+    },
+    "frontend/rpc.go:frontendServer.getProduct": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 51,
+      "source_occurrence_lines": [
+        45,
+        51,
+        107
+      ]
+    },
+    "productcatalogservice/product_catalog.go:productCatalog.GetProduct": {
+      "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+      "graph_line": 47,
+      "source_occurrence_lines": [
+        47
+      ]
+    },
+    "frontend/rpc.go:frontendServer.getShippingQuote": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 87,
+      "source_occurrence_lines": [
+        87
+      ]
+    },
+    "shippingservice/main.go:server.GetQuote": {
+      "source": "tmp\\online-boutique\\src\\shippingservice\\main.go",
+      "graph_line": 119,
+      "source_occurrence_lines": [
+        118,
+        119,
+        120,
+        121,
+        131
+      ]
+    },
+    "frontend/rpc.go:frontendServer.getRecommendations": {
+      "source": "tmp\\online-boutique\\src\\frontend\\rpc.go",
+      "graph_line": 99,
+      "source_occurrence_lines": [
+        99
+      ]
+    },
+    "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations": {
+      "source": "tmp\\online-boutique\\src\\recommendationservice\\recommendation_server.py",
+      "graph_line": 70,
+      "source_occurrence_lines": [
+        70,
+        82,
+        84
+      ]
+    },
+    "frontend/handlers.go:frontendServer.placeOrderHandler": {
+      "source": "tmp\\online-boutique\\src\\frontend\\handlers.go",
+      "graph_line": 320,
+      "source_occurrence_lines": [
+        320
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.PlaceOrder": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 230,
+      "source_occurrence_lines": [
+        230,
+        231,
+        278
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.prepOrderItems": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 339,
+      "source_occurrence_lines": [
+        294,
+        339
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.convertCurrency": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 359,
+      "source_occurrence_lines": [
+        302,
+        348,
+        359
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.chargeCard": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 369,
+      "source_occurrence_lines": [
+        252,
+        369
+      ]
+    },
+    "paymentservice/server.js:HipsterShopServer.ChargeServiceHandler": {
+      "source": "tmp\\online-boutique\\src\\paymentservice\\server.js",
+      "graph_line": 41,
+      "source_occurrence_lines": [
+        41,
+        91
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.sendOrderConfirmation": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 379,
+      "source_occurrence_lines": [
+        273,
+        379
+      ]
+    },
+    "emailservice/email_server.py:EmailService.SendOrderConfirmation": {
+      "source": "tmp\\online-boutique\\src\\emailservice\\email_server.py",
+      "graph_line": 86,
+      "source_occurrence_lines": [
+        86,
+        109
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.shipOrder": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 386,
+      "source_occurrence_lines": [
+        258,
+        386
+      ]
+    },
+    "shippingservice/main.go:server.ShipOrder": {
+      "source": "tmp\\online-boutique\\src\\shippingservice\\main.go",
+      "graph_line": 142,
+      "source_occurrence_lines": [
+        140,
+        142,
+        143,
+        144,
+        150
+      ]
+    },
+    "checkoutservice/main.go:checkoutService.quoteShipping": {
+      "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+      "graph_line": 313,
+      "source_occurrence_lines": [
+        298,
+        313
+      ]
+    },
+    "emailservice/email_client.py:send_confirmation_email": {
+      "source": "tmp\\online-boutique\\src\\emailservice\\email_client.py",
+      "graph_line": 25,
+      "source_occurrence_lines": [
+        25
+      ]
+    }
+  },
+  "queries": [
+    {
+      "id": "link-00-explicit",
+      "query": "In Online Boutique, where is GetSupportedCurrencies implemented for frontendServer.getCurrencies?",
+      "kind": "explicit",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getCurrencies",
+      "target": "currencyservice/server.js:getSupportedCurrencies",
+      "path": [
+        "frontend/rpc.go:frontendServer.getCurrencies",
+        "contract::CurrencyService.GetSupportedCurrencies",
+        "currencyservice/server.js:getSupportedCurrencies"
+      ]
+    },
+    {
+      "id": "link-00-indirect",
+      "query": "Which service supplies the available currency choices for display?",
+      "kind": "indirect",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getCurrencies",
+      "target": "currencyservice/server.js:getSupportedCurrencies",
+      "path": [
+        "frontend/rpc.go:frontendServer.getCurrencies",
+        "contract::CurrencyService.GetSupportedCurrencies",
+        "currencyservice/server.js:getSupportedCurrencies"
+      ]
+    },
+    {
+      "id": "link-01-explicit",
+      "query": "In Online Boutique, where is Convert implemented for frontendServer.convertCurrency?",
+      "kind": "explicit",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.convertCurrency",
+      "target": "currencyservice/server.js:convert",
+      "path": [
+        "frontend/rpc.go:frontendServer.convertCurrency",
+        "contract::CurrencyService.Convert",
+        "currencyservice/server.js:convert"
+      ]
+    },
+    {
+      "id": "link-01-indirect",
+      "query": "Which implementation exchanges a money amount into another currency?",
+      "kind": "indirect",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.convertCurrency",
+      "target": "currencyservice/server.js:convert",
+      "path": [
+        "frontend/rpc.go:frontendServer.convertCurrency",
+        "contract::CurrencyService.Convert",
+        "currencyservice/server.js:convert"
+      ]
+    },
+    {
+      "id": "link-02-explicit",
+      "query": "In Online Boutique, where is ListProducts implemented for frontendServer.getProducts?",
+      "kind": "explicit",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getProducts",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "path": [
+        "frontend/rpc.go:frontendServer.getProducts",
+        "contract::ProductCatalogService.ListProducts",
+        "productcatalogservice/product_catalog.go:productCatalog.ListProducts"
+      ]
+    },
+    {
+      "id": "link-02-indirect",
+      "query": "Where is the available merchandise catalog supplied?",
+      "kind": "indirect",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getProducts",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "path": [
+        "frontend/rpc.go:frontendServer.getProducts",
+        "contract::ProductCatalogService.ListProducts",
+        "productcatalogservice/product_catalog.go:productCatalog.ListProducts"
+      ]
+    },
+    {
+      "id": "link-03-explicit",
+      "query": "In Online Boutique, where is GetProduct implemented for frontendServer.getProduct?",
+      "kind": "explicit",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getProduct",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "path": [
+        "frontend/rpc.go:frontendServer.getProduct",
+        "contract::ProductCatalogService.GetProduct",
+        "productcatalogservice/product_catalog.go:productCatalog.GetProduct"
+      ]
+    },
+    {
+      "id": "link-03-indirect",
+      "query": "Where are the details for a single merchandise item fetched?",
+      "kind": "indirect",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getProduct",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "path": [
+        "frontend/rpc.go:frontendServer.getProduct",
+        "contract::ProductCatalogService.GetProduct",
+        "productcatalogservice/product_catalog.go:productCatalog.GetProduct"
+      ]
+    },
+    {
+      "id": "link-04-explicit",
+      "query": "In Online Boutique, where is GetQuote implemented for frontendServer.getShippingQuote?",
+      "kind": "explicit",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getShippingQuote",
+      "target": "shippingservice/main.go:server.GetQuote",
+      "path": [
+        "frontend/rpc.go:frontendServer.getShippingQuote",
+        "contract::ShippingService.GetQuote",
+        "shippingservice/main.go:server.GetQuote"
+      ]
+    },
+    {
+      "id": "link-04-indirect",
+      "query": "Which service calculates the delivery price before an order is sent?",
+      "kind": "indirect",
+      "split": "dev",
+      "start": "frontend/rpc.go:frontendServer.getShippingQuote",
+      "target": "shippingservice/main.go:server.GetQuote",
+      "path": [
+        "frontend/rpc.go:frontendServer.getShippingQuote",
+        "contract::ShippingService.GetQuote",
+        "shippingservice/main.go:server.GetQuote"
+      ]
+    },
+    {
+      "id": "link-05-explicit",
+      "query": "In Online Boutique, where is ListRecommendations implemented for frontendServer.getRecommendations?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "frontend/rpc.go:frontendServer.getRecommendations",
+      "target": "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+      "path": [
+        "frontend/rpc.go:frontendServer.getRecommendations",
+        "contract::RecommendationService.ListRecommendations",
+        "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations"
+      ]
+    },
+    {
+      "id": "link-05-indirect",
+      "query": "Where are suggested merchandise items chosen?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "frontend/rpc.go:frontendServer.getRecommendations",
+      "target": "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+      "path": [
+        "frontend/rpc.go:frontendServer.getRecommendations",
+        "contract::RecommendationService.ListRecommendations",
+        "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations"
+      ]
+    },
+    {
+      "id": "link-06-explicit",
+      "query": "In Online Boutique, where is PlaceOrder implemented for frontendServer.placeOrderHandler?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "frontend/handlers.go:frontendServer.placeOrderHandler",
+      "target": "checkoutservice/main.go:checkoutService.PlaceOrder",
+      "path": [
+        "frontend/handlers.go:frontendServer.placeOrderHandler",
+        "contract::CheckoutService.PlaceOrder",
+        "checkoutservice/main.go:checkoutService.PlaceOrder"
+      ]
+    },
+    {
+      "id": "link-06-indirect",
+      "query": "Where is a shopper purchase finalized across the backend services?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "frontend/handlers.go:frontendServer.placeOrderHandler",
+      "target": "checkoutservice/main.go:checkoutService.PlaceOrder",
+      "path": [
+        "frontend/handlers.go:frontendServer.placeOrderHandler",
+        "contract::CheckoutService.PlaceOrder",
+        "checkoutservice/main.go:checkoutService.PlaceOrder"
+      ]
+    },
+    {
+      "id": "link-07-explicit",
+      "query": "In Online Boutique, where is GetProduct implemented for checkoutService.prepOrderItems?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.prepOrderItems",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "path": [
+        "checkoutservice/main.go:checkoutService.prepOrderItems",
+        "contract::ProductCatalogService.GetProduct",
+        "productcatalogservice/product_catalog.go:productCatalog.GetProduct"
+      ]
+    },
+    {
+      "id": "link-07-indirect",
+      "query": "Where are the details for a single merchandise item fetched?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.prepOrderItems",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "path": [
+        "checkoutservice/main.go:checkoutService.prepOrderItems",
+        "contract::ProductCatalogService.GetProduct",
+        "productcatalogservice/product_catalog.go:productCatalog.GetProduct"
+      ]
+    },
+    {
+      "id": "link-08-explicit",
+      "query": "In Online Boutique, where is Convert implemented for checkoutService.convertCurrency?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.convertCurrency",
+      "target": "currencyservice/server.js:convert",
+      "path": [
+        "checkoutservice/main.go:checkoutService.convertCurrency",
+        "contract::CurrencyService.Convert",
+        "currencyservice/server.js:convert"
+      ]
+    },
+    {
+      "id": "link-08-indirect",
+      "query": "Which implementation exchanges a money amount into another currency?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.convertCurrency",
+      "target": "currencyservice/server.js:convert",
+      "path": [
+        "checkoutservice/main.go:checkoutService.convertCurrency",
+        "contract::CurrencyService.Convert",
+        "currencyservice/server.js:convert"
+      ]
+    },
+    {
+      "id": "link-09-explicit",
+      "query": "In Online Boutique, where is Charge implemented for checkoutService.chargeCard?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.chargeCard",
+      "target": "paymentservice/server.js:HipsterShopServer.ChargeServiceHandler",
+      "path": [
+        "checkoutservice/main.go:checkoutService.chargeCard",
+        "contract::PaymentService.Charge",
+        "paymentservice/server.js:HipsterShopServer.ChargeServiceHandler"
+      ]
+    },
+    {
+      "id": "link-09-indirect",
+      "query": "Where is the customer credit card charged during checkout?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.chargeCard",
+      "target": "paymentservice/server.js:HipsterShopServer.ChargeServiceHandler",
+      "path": [
+        "checkoutservice/main.go:checkoutService.chargeCard",
+        "contract::PaymentService.Charge",
+        "paymentservice/server.js:HipsterShopServer.ChargeServiceHandler"
+      ]
+    },
+    {
+      "id": "link-10-explicit",
+      "query": "In Online Boutique, where is SendOrderConfirmation implemented for checkoutService.sendOrderConfirmation?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.sendOrderConfirmation",
+      "target": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "path": [
+        "checkoutservice/main.go:checkoutService.sendOrderConfirmation",
+        "contract::EmailService.SendOrderConfirmation",
+        "emailservice/email_server.py:EmailService.SendOrderConfirmation"
+      ]
+    },
+    {
+      "id": "link-10-indirect",
+      "query": "Where is the purchase receipt notification sent to the customer?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.sendOrderConfirmation",
+      "target": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "path": [
+        "checkoutservice/main.go:checkoutService.sendOrderConfirmation",
+        "contract::EmailService.SendOrderConfirmation",
+        "emailservice/email_server.py:EmailService.SendOrderConfirmation"
+      ]
+    },
+    {
+      "id": "link-11-explicit",
+      "query": "In Online Boutique, where is ShipOrder implemented for checkoutService.shipOrder?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.shipOrder",
+      "target": "shippingservice/main.go:server.ShipOrder",
+      "path": [
+        "checkoutservice/main.go:checkoutService.shipOrder",
+        "contract::ShippingService.ShipOrder",
+        "shippingservice/main.go:server.ShipOrder"
+      ]
+    },
+    {
+      "id": "link-11-indirect",
+      "query": "Where is a purchased order dispatched and assigned tracking?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.shipOrder",
+      "target": "shippingservice/main.go:server.ShipOrder",
+      "path": [
+        "checkoutservice/main.go:checkoutService.shipOrder",
+        "contract::ShippingService.ShipOrder",
+        "shippingservice/main.go:server.ShipOrder"
+      ]
+    },
+    {
+      "id": "link-12-explicit",
+      "query": "In Online Boutique, where is GetQuote implemented for checkoutService.quoteShipping?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.quoteShipping",
+      "target": "shippingservice/main.go:server.GetQuote",
+      "path": [
+        "checkoutservice/main.go:checkoutService.quoteShipping",
+        "contract::ShippingService.GetQuote",
+        "shippingservice/main.go:server.GetQuote"
+      ]
+    },
+    {
+      "id": "link-12-indirect",
+      "query": "Which service calculates the delivery price before an order is sent?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "checkoutservice/main.go:checkoutService.quoteShipping",
+      "target": "shippingservice/main.go:server.GetQuote",
+      "path": [
+        "checkoutservice/main.go:checkoutService.quoteShipping",
+        "contract::ShippingService.GetQuote",
+        "shippingservice/main.go:server.GetQuote"
+      ]
+    },
+    {
+      "id": "link-13-explicit",
+      "query": "In Online Boutique, where is ListProducts implemented for RecommendationService.ListRecommendations?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "path": [
+        "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+        "contract::ProductCatalogService.ListProducts",
+        "productcatalogservice/product_catalog.go:productCatalog.ListProducts"
+      ]
+    },
+    {
+      "id": "link-13-indirect",
+      "query": "Where is the available merchandise catalog supplied?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+      "target": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "path": [
+        "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+        "contract::ProductCatalogService.ListProducts",
+        "productcatalogservice/product_catalog.go:productCatalog.ListProducts"
+      ]
+    },
+    {
+      "id": "link-14-explicit",
+      "query": "In Online Boutique, where is SendOrderConfirmation implemented for send_confirmation_email?",
+      "kind": "explicit",
+      "split": "test",
+      "start": "emailservice/email_client.py:send_confirmation_email",
+      "target": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "path": [
+        "emailservice/email_client.py:send_confirmation_email",
+        "contract::EmailService.SendOrderConfirmation",
+        "emailservice/email_server.py:EmailService.SendOrderConfirmation"
+      ]
+    },
+    {
+      "id": "link-14-indirect",
+      "query": "Where is the purchase receipt notification sent to the customer?",
+      "kind": "indirect",
+      "split": "test",
+      "start": "emailservice/email_client.py:send_confirmation_email",
+      "target": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "path": [
+        "emailservice/email_client.py:send_confirmation_email",
+        "contract::EmailService.SendOrderConfirmation",
+        "emailservice/email_server.py:EmailService.SendOrderConfirmation"
+      ]
+    }
+  ]
+}

@@ -23,6 +23,7 @@ def test_visualization_export_contains_graph_payload(tmp_path: Path) -> None:
     assert "zoomAt(event.clientX, event.clientY" in html
     assert 'id="zoomIn"' in html
     assert 'id="egpotOnly"' in html
+    assert 'id="layer"' in html
     assert "useRepulsion = activeNodes.length <= 260" in html
     assert 'return 3.8' in html
     assert "a.g" in html

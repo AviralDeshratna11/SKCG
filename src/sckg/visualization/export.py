@@ -25,6 +25,7 @@ KIND_COLORS = {
     "field": "#f97316",
     "repository": "#64748b",
     "code_chunk": "#6b7280",
+    "commit": "#0f766e",
 }
 
 
@@ -49,6 +50,7 @@ def graph_to_visualization(
             "file": symbol.file_path,
             "line": symbol.start_line,
             "sourceText": symbol.source_text or "",
+            "layer": str(symbol.metadata.get("layer", "")),
             "color": KIND_COLORS.get(symbol.kind.value, "#475569"),
             "egpotSelected": symbol.id in selected_nodes,
             "egpotSeed": symbol.id in seed_nodes,
@@ -64,6 +66,7 @@ def graph_to_visualization(
             "type": relation.relation_type.value,
             "confidence": relation.confidence,
             "provenance": relation.provenance.value,
+            "layer": str(relation.metadata.get("layer", "")),
             "egpotSelected": relation.id in selected_edges,
         }
         for relation in relations
@@ -441,6 +444,11 @@ def _html_document(title: str, payload: str) -> str:
         <option value="">All relations</option>
       </select>
 
+      <label for="layer">Architecture layer</label>
+      <select id="layer">
+        <option value="">All layers</option>
+      </select>
+
       <div class="legend" id="legend"></div>
       <div class="details" id="details">Select a node or edge to inspect it.</div>
       <div class="inspect-section">
@@ -468,6 +476,7 @@ def _html_document(title: str, payload: str) -> str:
     const svg = document.getElementById("graph");
     const search = document.getElementById("search");
     const relation = document.getElementById("relation");
+    const layer = document.getElementById("layer");
     const details = document.getElementById("details");
     const stats = document.getElementById("stats");
     const nodeList = document.getElementById("nodeList");
@@ -505,6 +514,13 @@ def _html_document(title: str, payload: str) -> str:
       option.textContent = type;
       relation.appendChild(option);
     }}
+    const layers = [...new Set(links.map(link => link.layer).filter(Boolean))].sort();
+    for (const value of layers) {{
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      layer.appendChild(option);
+    }}
     const kinds = [...new Map(nodes.map(node => [node.kind, node.color])).entries()].sort();
     document.getElementById("legend").innerHTML = kinds.map(([kind, color]) =>
       `<div class="legend-item"><span class="swatch" style="background:${{color}}"></span><span>${{kind}}</span></div>`
@@ -526,11 +542,13 @@ def _html_document(title: str, payload: str) -> str:
     function filtered() {{
       const q = search.value.trim().toLowerCase();
       const rel = relation.value;
+      const selectedLayer = layer.value;
       const visibleNodes = new Set(nodes.filter(node => !q ||
         `${{node.label}} ${{node.qualifiedName}} ${{node.file}} ${{node.kind}}`.toLowerCase().includes(q)
       ).filter(node => !egpotOnly || node.egpotSelected || node.egpotSeed).map(node => node.id));
       const visibleLinks = links.filter(link =>
         (!rel || link.type === rel) &&
+        (!selectedLayer || link.layer === selectedLayer) &&
         (!egpotOnly || link.egpotSelected) &&
         visibleNodes.has(link.source) &&
         visibleNodes.has(link.target)
@@ -538,6 +556,12 @@ def _html_document(title: str, payload: str) -> str:
       for (const link of visibleLinks) {{
         visibleNodes.add(link.source);
         visibleNodes.add(link.target);
+      }}
+      if (rel || selectedLayer) {{
+        const connected = new Set(visibleLinks.flatMap(link => [link.source, link.target]));
+        for (const id of visibleNodes) {{
+          if (!connected.has(id)) visibleNodes.delete(id);
+        }}
       }}
       return {{
         nodes: nodes.filter(node => visibleNodes.has(node.id)),
@@ -691,6 +715,7 @@ def _html_document(title: str, payload: str) -> str:
       details.innerHTML = `
         <strong>${{escapeHtml(node.qualifiedName)}}</strong>
         <div class="details-row">Kind: ${{escapeHtml(node.kind)}}</div>
+        ${{node.layer ? `<div class="details-row">Layer: ${{escapeHtml(node.layer)}}</div>` : ""}}
         <div class="details-row">File: ${{escapeHtml(node.file)}}:${{escapeHtml(node.line)}}</div>
         ${{node.egpotSeed ? `<div class="details-row">EG-POT: seed node</div>` : ""}}
         ${{node.egpotSelected ? `<div class="details-row">EG-POT: selected context node</div>` : ""}}
@@ -710,6 +735,7 @@ def _html_document(title: str, payload: str) -> str:
       const source = nodeById.get(link.source);
       const target = nodeById.get(link.target);
       details.innerHTML = `<strong>${{link.type}}</strong>
+        <div>Layer: ${{escapeHtml(link.layer || "unassigned")}}</div>
         <div>${{source?.qualifiedName || link.source}}</div>
         <div>to ${{target?.qualifiedName || link.target}}</div>
         <div>Confidence: ${{Number(link.confidence).toFixed(2)}}</div>
@@ -765,7 +791,7 @@ def _html_document(title: str, payload: str) -> str:
         return `
           <button class="list-item${{link.id === selectedLinkId ? " active" : ""}}" data-edge="${{escapeAttr(link.id)}}">
             <span class="item-name">${{escapeHtml(link.type)}}</span>
-            <span class="item-meta">${{escapeHtml(source?.label || link.source)}} -> ${{escapeHtml(target?.label || link.target)}}</span>
+            <span class="item-meta">${{escapeHtml(link.layer || "")}} · ${{escapeHtml(source?.label || link.source)}} -> ${{escapeHtml(target?.label || link.target)}}</span>
           </button>
         `;
       }}).join("");
@@ -880,6 +906,7 @@ def _html_document(title: str, payload: str) -> str:
     }}, {{passive: false}});
     search.addEventListener("input", () => render(true));
     relation.addEventListener("change", () => render(true));
+    layer.addEventListener("change", () => render(true));
     labelsButton.addEventListener("click", () => {{
       showLabels = !showLabels;
       render(false);

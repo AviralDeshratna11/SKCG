@@ -1,0 +1,1038 @@
+{
+  "query": "Where is order payment status updated?",
+  "seeds": [
+    "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+    "app/api/create-order/route.ts:POST.var::status",
+    "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter"
+  ],
+  "stop_reason": "NODE_BUDGET",
+  "selected_nodes": [
+    "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter",
+    "app/api/create-order/route.ts:POST.var::status",
+    "app/api/create-order/route.ts:POST",
+    "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+    "app/api/admin/overview/route.ts:GET",
+    "app/api/admin/overview/route.ts:firstRelated",
+    "app/api/admin/overview/route.ts:GET.var::payment"
+  ],
+  "selected_edges": [
+    "rel_1d1f2208b1bace35eecfc5df52064b98",
+    "rel_228885d70c2b08e9c7955c582120e534",
+    "rel_1f95a7731087d68eb1c924632f677e89",
+    "rel_e393704bf6a584b47a6022f27b67de72"
+  ],
+  "objective_scores": {
+    "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce": [
+      0.3535533905932738,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "app/api/create-order/route.ts:POST.var::status": [
+      0.372677996249965,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter": [
+      0.2614881801842454,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET": [
+      0.0,
+      -0.15,
+      0.6,
+      0.3886600219264884
+    ],
+    "app/api/admin/overview/route.ts:firstRelated": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.290279567088615
+    ],
+    "app/api/admin/overview/route.ts:countPaidOrdersSince": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.2694614077116755
+    ],
+    "app/api/admin/overview/route.ts:GET.var::payment": [
+      0.223606797749979,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::[\"id\", \"public_number\", \"restaurant_id\", \"fulfilment_mode\", \"status\", \"status_version\", \"subtotal_paise\", \"delivery_fee_paise\", \"created_at\", \"updated_at\", \"rejection_reason\", \"status_reason\", \"delivery_note\", \"customer_name_snapshot\", \"customer_phone_e164_snapshot\", \"restaurants(name)\", \"delivery_landmarks(name)\", \"payments(status)\", \"checkout_groups(payments(status))\", \"razorpay_refund_jobs(status,provider_status,provider_refund_id,last_error)\"].join": [
+      0.22019275302527216,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "file::app/api/admin/overview/route.ts": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.16689671819810387
+    ],
+    "external::new Date(order.created_at).getTime": [
+      0.16666666666666669,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:configured": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.11774873137823032
+    ],
+    "app/api/admin/overview/route.ts:GET.var::activeSelect": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::checkout": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::failedRefunds": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::indiaNow": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::integrations": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::landmark": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::orders": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::refund": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::request": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::restaurant": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::start": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::user": [
+      0.07453559924999299,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.var::restaurantHealth": [
+      0.0662266178532522,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.return::33": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.return::48": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:GET.return::63": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::Date.UTC": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::Promise.all": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::[\"created\", \"cancelled\"].includes": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::[\"payment_confirmed\", \"pending_acceptance\", \"preparing\"].includes": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::activeRows.map": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::areas.map": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::getServerVariable": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::indiaNow.getUTCDate": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::indiaNow.getUTCFullYear": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::indiaNow.getUTCMonth": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::notificationIssues.some": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::orders.filter": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::restaurants.map": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::soldOut.filter": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::start.toISOString": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "external::supabaseJson": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "external::todayRows.filter": [
+      0.0,
+      -0.3,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:firstRelated.var::value": [
+      0.07453559924999299,
+      -0.6,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:firstRelated.return::80": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:RawNotification": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:RawOrder": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:RawRestaurant": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.0
+    ],
+    "symbol::app.lib.supabase.getServerVariable": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.0
+    ],
+    "symbol::app.lib.supabase.supabaseFetch": [
+      0.0,
+      -0.44999999999999996,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count": [
+      0.07453559924999299,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:countPaidOrdersSince.var::response": [
+      0.07453559924999299,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:countPaidOrdersSince.var::start": [
+      0.07453559924999299,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "app/api/admin/overview/route.ts:countPaidOrdersSince.return::74": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "external::Number.isSafeInteger": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "external::response.headers.get": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "external::response.headers.get(\"content-range\")?.split": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "external::supabaseFetch": [
+      0.0,
+      -0.75,
+      0.6,
+      0.0
+    ],
+    "app/api/create-order/route.ts:POST": [
+      0.15430334996209194,
+      -0.15,
+      0.6,
+      0.34121477327153993
+    ]
+  },
+  "trace": [
+    {
+      "hop": 1,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce"
+      ],
+      "candidate_count": 1,
+      "selected": [
+        "app/api/admin/overview/route.ts:GET"
+      ]
+    },
+    {
+      "hop": 2,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET"
+      ],
+      "candidate_count": 53,
+      "selected": [
+        "app/api/admin/overview/route.ts:firstRelated",
+        "app/api/admin/overview/route.ts:GET.var::payment",
+        "file::app/api/admin/overview/route.ts"
+      ]
+    },
+    {
+      "hop": 3,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:firstRelated"
+      ],
+      "candidate_count": 4,
+      "selected": [
+        "file::app/api/admin/overview/route.ts",
+        "app/api/admin/overview/route.ts:firstRelated.var::value"
+      ]
+    },
+    {
+      "hop": 4,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:firstRelated",
+        "file::app/api/admin/overview/route.ts"
+      ],
+      "candidate_count": 7,
+      "selected": [
+        "app/api/admin/overview/route.ts:countPaidOrdersSince",
+        "symbol::app.lib.supabase.supabaseFetch"
+      ]
+    },
+    {
+      "hop": 5,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:firstRelated",
+        "file::app/api/admin/overview/route.ts",
+        "app/api/admin/overview/route.ts:countPaidOrdersSince"
+      ],
+      "candidate_count": 12,
+      "selected": [
+        "app/api/admin/overview/route.ts:countPaidOrdersSince.var::start",
+        "external::supabaseFetch",
+        "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count",
+        "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count",
+        "app/api/admin/overview/route.ts:countPaidOrdersSince.var::response"
+      ]
+    },
+    {
+      "hop": 1,
+      "path": [
+        "app/api/create-order/route.ts:POST.var::status"
+      ],
+      "candidate_count": 1,
+      "selected": [
+        "app/api/create-order/route.ts:POST"
+      ]
+    },
+    {
+      "hop": 2,
+      "path": [
+        "app/api/create-order/route.ts:POST.var::status",
+        "app/api/create-order/route.ts:POST"
+      ],
+      "candidate_count": 0,
+      "selected": []
+    },
+    {
+      "hop": 1,
+      "path": [
+        "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter"
+      ],
+      "candidate_count": 0,
+      "selected": []
+    },
+    {
+      "hop": 3,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:GET.var::payment"
+      ],
+      "candidate_count": 0,
+      "selected": []
+    },
+    {
+      "hop": 3,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "file::app/api/admin/overview/route.ts"
+      ],
+      "candidate_count": 8,
+      "selected": [
+        "app/api/admin/overview/route.ts:firstRelated",
+        "symbol::app.lib.supabase.supabaseFetch"
+      ]
+    },
+    {
+      "hop": 4,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "file::app/api/admin/overview/route.ts",
+        "app/api/admin/overview/route.ts:firstRelated"
+      ],
+      "candidate_count": 3,
+      "selected": [
+        "app/api/admin/overview/route.ts:firstRelated.var::value"
+      ]
+    },
+    {
+      "hop": 5,
+      "path": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "file::app/api/admin/overview/route.ts",
+        "app/api/admin/overview/route.ts:firstRelated",
+        "app/api/admin/overview/route.ts:firstRelated.var::value"
+      ],
+      "candidate_count": 1,
+      "selected": [
+        "app/api/admin/overview/route.ts:firstRelated.return::80"
+      ]
+    }
+  ],
+  "search": {
+    "trace": [
+      {
+        "hop": 1,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce"
+        ],
+        "candidate_count": 1,
+        "selected": [
+          "app/api/admin/overview/route.ts:GET"
+        ]
+      },
+      {
+        "hop": 2,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET"
+        ],
+        "candidate_count": 53,
+        "selected": [
+          "app/api/admin/overview/route.ts:firstRelated",
+          "app/api/admin/overview/route.ts:GET.var::payment",
+          "file::app/api/admin/overview/route.ts"
+        ]
+      },
+      {
+        "hop": 3,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated"
+        ],
+        "candidate_count": 4,
+        "selected": [
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated.var::value"
+        ]
+      },
+      {
+        "hop": 4,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts"
+        ],
+        "candidate_count": 7,
+        "selected": [
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "symbol::app.lib.supabase.supabaseFetch"
+        ]
+      },
+      {
+        "hop": 5,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince"
+        ],
+        "candidate_count": 12,
+        "selected": [
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::start",
+          "external::supabaseFetch",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::response"
+        ]
+      },
+      {
+        "hop": 1,
+        "path": [
+          "app/api/create-order/route.ts:POST.var::status"
+        ],
+        "candidate_count": 1,
+        "selected": [
+          "app/api/create-order/route.ts:POST"
+        ]
+      },
+      {
+        "hop": 2,
+        "path": [
+          "app/api/create-order/route.ts:POST.var::status",
+          "app/api/create-order/route.ts:POST"
+        ],
+        "candidate_count": 0,
+        "selected": []
+      },
+      {
+        "hop": 1,
+        "path": [
+          "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter"
+        ],
+        "candidate_count": 0,
+        "selected": []
+      },
+      {
+        "hop": 3,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:GET.var::payment"
+        ],
+        "candidate_count": 0,
+        "selected": []
+      },
+      {
+        "hop": 3,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts"
+        ],
+        "candidate_count": 8,
+        "selected": [
+          "app/api/admin/overview/route.ts:firstRelated",
+          "symbol::app.lib.supabase.supabaseFetch"
+        ]
+      },
+      {
+        "hop": 4,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated"
+        ],
+        "candidate_count": 3,
+        "selected": [
+          "app/api/admin/overview/route.ts:firstRelated.var::value"
+        ]
+      },
+      {
+        "hop": 5,
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "app/api/admin/overview/route.ts:firstRelated.var::value"
+        ],
+        "candidate_count": 1,
+        "selected": [
+          "app/api/admin/overview/route.ts:firstRelated.return::80"
+        ]
+      }
+    ],
+    "mcts_enabled": true,
+    "simulations": 64,
+    "tree": [
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce"
+        ],
+        "visits": 3,
+        "mean_value": 0.09938079899999064,
+        "prior": 0.3333333333333333
+      },
+      {
+        "path": [
+          "app/api/create-order/route.ts:POST.var::status"
+        ],
+        "visits": 9,
+        "mean_value": 0.9455181232336319,
+        "prior": 0.3333333333333333
+      },
+      {
+        "path": [
+          "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter"
+        ],
+        "visits": 52,
+        "mean_value": 1.2614881801842448,
+        "prior": 0.3333333333333333
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET"
+        ],
+        "visits": 3,
+        "mean_value": 0.09938079899999064,
+        "prior": 1.0
+      },
+      {
+        "path": [
+          "app/api/create-order/route.ts:POST.var::status",
+          "app/api/create-order/route.ts:POST"
+        ],
+        "visits": 9,
+        "mean_value": 0.9455181232336319,
+        "prior": 1.0
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated"
+        ],
+        "visits": 1,
+        "mean_value": -0.07546440075000704,
+        "prior": 0.3546820648758212
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:GET.var::payment"
+        ],
+        "visits": 1,
+        "mean_value": 0.523606797749979,
+        "prior": 0.3318055242503174
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts"
+        ],
+        "visits": 1,
+        "mean_value": -0.15000000000000002,
+        "prior": 0.3135124108738613
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts"
+        ],
+        "visits": 1,
+        "mean_value": -0.07546440075000704,
+        "prior": 0.5230738792780114
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "app/api/admin/overview/route.ts:firstRelated.var::value"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.4769261207219886
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated"
+        ],
+        "visits": 1,
+        "mean_value": -0.15000000000000002,
+        "prior": 0.5720645742055454
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "symbol::app.lib.supabase.supabaseFetch"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.4279354257944546
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince"
+        ],
+        "visits": 1,
+        "mean_value": -0.07546440075000704,
+        "prior": 0.5669606765689106
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "symbol::app.lib.supabase.supabaseFetch"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.4330393234310895
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "app/api/admin/overview/route.ts:firstRelated.var::value"
+        ],
+        "visits": 1,
+        "mean_value": -0.15000000000000002,
+        "prior": 1.0
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::start"
+        ],
+        "visits": 1,
+        "mean_value": -0.07546440075000704,
+        "prior": 0.20291489556005468
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "external::supabaseFetch"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.18834041775978122
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.20291489556005468
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::count"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.20291489556005468
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince",
+          "app/api/admin/overview/route.ts:countPaidOrdersSince.var::response"
+        ],
+        "visits": 0,
+        "mean_value": 0.0,
+        "prior": 0.20291489556005468
+      },
+      {
+        "path": [
+          "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+          "app/api/admin/overview/route.ts:GET",
+          "file::app/api/admin/overview/route.ts",
+          "app/api/admin/overview/route.ts:firstRelated",
+          "app/api/admin/overview/route.ts:firstRelated.var::value",
+          "app/api/admin/overview/route.ts:firstRelated.return::80"
+        ],
+        "visits": 1,
+        "mean_value": -0.15000000000000002,
+        "prior": 1.0
+      }
+    ],
+    "embedding_provider": "hashing",
+    "hub_suppression_enabled": true,
+    "hub_degree_threshold": 10,
+    "suppressed_hubs": [
+      "external::Array.isArray",
+      "external::Date",
+      "external::Date.now",
+      "external::Number",
+      "external::Response.json",
+      "external::String",
+      "external::SupabaseServerError",
+      "external::apiError",
+      "external::assertAdmin",
+      "external::await supabaseJson",
+      "external::await supabaseRpc",
+      "external::encodeURIComponent",
+      "external::enforceRateLimit",
+      "external::noStoreHeaders",
+      "external::requireFirebaseUser",
+      "external::supabaseRpc",
+      "symbol::app.lib.api-response.apiError",
+      "symbol::app.lib.api-response.noStoreHeaders",
+      "symbol::app.lib.firebase-auth.requireFirebaseUser",
+      "symbol::app.lib.security.enforceRateLimit",
+      "symbol::app.lib.supabase.SupabaseServerError",
+      "symbol::app.lib.supabase.assertAdmin",
+      "symbol::app.lib.supabase.supabaseJson",
+      "symbol::app.lib.supabase.supabaseRpc"
+    ]
+  },
+  "trajectories": [
+    {
+      "nodes": [
+        "external::[\n      \"status=neq.created\",\n      status ? `status=eq.${status}` : \"\",\n      restaurantId ? `restaurant_id=eq.${restaurantId}` : \"\",\n      orderNumber ? `public_number=eq.${orderNumber}` : \"\",\n    ].filter"
+      ],
+      "edges": [],
+      "objectives": []
+    },
+    {
+      "nodes": [
+        "app/api/create-order/route.ts:POST.var::status",
+        "app/api/create-order/route.ts:POST"
+      ],
+      "edges": [
+        "rel_1d1f2208b1bace35eecfc5df52064b98"
+      ],
+      "objectives": [
+        [
+          0.15430334996209194,
+          -0.15,
+          0.6,
+          0.34121477327153993
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET"
+      ],
+      "edges": [
+        "rel_228885d70c2b08e9c7955c582120e534"
+      ],
+      "objectives": [
+        [
+          0.0,
+          -0.15,
+          0.6,
+          0.3886600219264884
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:firstRelated"
+      ],
+      "edges": [
+        "rel_228885d70c2b08e9c7955c582120e534",
+        "rel_1f95a7731087d68eb1c924632f677e89"
+      ],
+      "objectives": [
+        [
+          0.0,
+          -0.15,
+          0.6,
+          0.3886600219264884
+        ],
+        [
+          0.0,
+          -0.3,
+          0.6,
+          0.290279567088615
+        ]
+      ]
+    },
+    {
+      "nodes": [
+        "external::todayRows.filter((order) => ![\"created\", \"cancelled\"].includes(order.status)).reduce",
+        "app/api/admin/overview/route.ts:GET",
+        "app/api/admin/overview/route.ts:GET.var::payment"
+      ],
+      "edges": [
+        "rel_228885d70c2b08e9c7955c582120e534",
+        "rel_e393704bf6a584b47a6022f27b67de72"
+      ],
+      "objectives": [
+        [
+          0.0,
+          -0.15,
+          0.6,
+          0.3886600219264884
+        ],
+        [
+          0.223606797749979,
+          -0.3,
+          0.6,
+          0.0
+        ]
+      ]
+    }
+  ]
+}

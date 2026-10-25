@@ -1,0 +1,34 @@
+{
+  "url": "https://egpot-traversal-benchmarks.vercel.app",
+  "health": {
+    "status": "ok",
+    "engine": "sckg-egpot",
+    "branch": "egpot/traversal-benchmarks",
+    "base_branch": "shrey"
+  },
+  "source_commit": "8068e18aad5fd2e99c2b9c5f96355e807580b649",
+  "configuration_controls": 27,
+  "live_methods_tested": 15,
+  "benchmark_runs": 24000,
+  "recorded_providers_tested": [
+    "hashing",
+    "minilm"
+  ],
+  "graph_counts": {
+    "carmein": {
+      "nodes": 3137,
+      "edges": 7898,
+      "files": 112
+    },
+    "boutique": {
+      "nodes": 1794,
+      "edges": 5155,
+      "files": 41
+    }
+  },
+  "live_contract_path": "passed",
+  "invalid_parameter_http_checks": "4 passed",
+  "python_tests": "83 passed",
+  "production_dom_interaction_checks": "passed",
+  "browser_pixel_screenshot_qa": "unavailable; DOM canvas stubbed"
+}

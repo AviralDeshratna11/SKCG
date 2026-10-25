@@ -3,13 +3,14 @@ from __future__ import annotations
 import math
 from collections import Counter
 
-from sckg.graph.json_store import JsonGraphStore
 from sckg.graph.store import GraphStore
 from sckg.ir.models import Relation, Symbol
+from sckg.ir.enums import Provenance, RelationType
 from sckg.retrieval.egpot.config import EGPOTConfig
 from sckg.retrieval.egpot.models import ContractScore, ContractStatus, ObjectiveVector, Trajectory
 from sckg.retrieval.semantic import EmbeddingProvider, make_embedding_provider, cosine
 from sckg.retrieval.egpot.hub_suppression import HubSuppressor
+from sckg.retrieval.egpot.adjacency import Adjacency
 
 
 class StructuralEntropyEstimator:
@@ -17,11 +18,13 @@ class StructuralEntropyEstimator:
         self.store = store
         self.hubs = hubs
         self._cache: dict[str, float] = {}
+        self.adjacency = Adjacency(store)
 
     def entropy(self, symbol: Symbol) -> float:
         if symbol.id in self._cache:
             return self._cache[symbol.id]
-        relations = self._outgoing_relations(symbol)
+        relations = list({(r.target_symbol_id, r.relation_type): r
+                          for r in self._outgoing_relations(symbol)}.values())
         total = len(relations)
         if total == 0:
             self._cache[symbol.id] = 0.0
@@ -36,14 +39,8 @@ class StructuralEntropyEstimator:
         return value
 
     def _outgoing_relations(self, symbol: Symbol) -> list[Relation]:
-        if isinstance(self.store, JsonGraphStore):
-            return [
-                relation
-                for relation in self.store.relations.values()
-                if relation.source_symbol_id == symbol.id and relation.target_symbol_id != symbol.id
-            ]
-        _, relations = self.store.get_neighbors(symbol.id, depth=1)
-        return [relation for relation in relations if relation.source_symbol_id == symbol.id]
+        return [r for r in self.adjacency.edges(symbol.id)
+                if r.source_symbol_id == symbol.id and r.target_symbol_id != symbol.id]
 
 
 class NoveltyEstimator:
@@ -72,7 +69,7 @@ class ContractEvaluator:
                 ("matching symbol types",),
                 (relation.provenance.value,),
             )
-        if relation.confidence >= 0.95:
+        if relation.confidence >= 0.95 and relation.provenance != Provenance.HEURISTIC:
             return ContractScore(
                 self.config.contract_exact_score,
                 ContractStatus.COMPATIBLE,
@@ -119,7 +116,9 @@ class ObjectiveEvaluator:
         )
         entropy = self.entropy.entropy(candidate) if self.config.entropy_enabled else 0.0
         novelty = self.novelty.novelty(candidate, relation, trajectory) if self.config.novelty_enabled else 1.0
-        information_gain = entropy * novelty
+        # Keep information gain on the same [0, 1] scale as semantic/contract
+        # objectives; report the original entropy separately for diagnostics.
+        information_gain = entropy / math.log2(len(RelationType)) * novelty
         return (
             ObjectiveVector(semantic, hop, contract.score, information_gain),
             entropy,

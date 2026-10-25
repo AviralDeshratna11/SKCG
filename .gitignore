@@ -33,6 +33,7 @@ coverage.xml
 
 # Generated graph stores, visualizations, traces, and scratch files
 .sckg/
+.reference-sckg-build/
 /tmp/
 *.log
 
@@ -43,3 +44,8 @@ coverage.xml
 Thumbs.db
 Desktop.ini
 ~$*
+
+# Separately versioned site and bulky local benchmark artifacts
+/site/graph-builder/
+/output/benchmarks/*/runs.jsonl
+/output/site/*.bundle

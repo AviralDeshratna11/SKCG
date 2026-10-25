@@ -1,0 +1,527 @@
+[
+  {
+    "budget": 20,
+    "competitor": "vector",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "vector_bfs_2",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "vector_bfs_3",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "vector_bfs_4",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "vector_bfs_5",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "ppr",
+    "paired_queries": 20,
+    "raw_p": 0.06559969214707187,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "beam",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "greedy",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "community",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "standard_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.04216819709715596,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "weighted_sum",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "no_entropy",
+    "paired_queries": 20,
+    "raw_p": 0.15729920705028502,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "no_contracts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "no_mcts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 20,
+    "competitor": "expanded_budget",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "vector",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "vector_bfs_2",
+    "paired_queries": 20,
+    "raw_p": 0.10247043485974937,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "vector_bfs_3",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "vector_bfs_4",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "vector_bfs_5",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "ppr",
+    "paired_queries": 20,
+    "raw_p": 0.04216819709715596,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "beam",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "greedy",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "community",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "standard_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.06788915486182899,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "weighted_sum",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "no_entropy",
+    "paired_queries": 20,
+    "raw_p": 0.15729920705028502,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "no_contracts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "no_mcts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 40,
+    "competitor": "expanded_budget",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "vector",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "vector_bfs_2",
+    "paired_queries": 20,
+    "raw_p": 0.10247043485974937,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "vector_bfs_3",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "vector_bfs_4",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "vector_bfs_5",
+    "paired_queries": 20,
+    "raw_p": 0.17971249487899976,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "ppr",
+    "paired_queries": 20,
+    "raw_p": 0.06788915486182899,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "beam",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "greedy",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "community",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "standard_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.06788915486182899,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "weighted_sum",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "no_entropy",
+    "paired_queries": 20,
+    "raw_p": 0.15729920705028502,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "no_contracts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "no_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.31731050786291415,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 60,
+    "competitor": "expanded_budget",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "vector",
+    "paired_queries": 20,
+    "raw_p": 0.4922069926558157,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "vector_bfs_2",
+    "paired_queries": 20,
+    "raw_p": 0.8292484591829462,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "vector_bfs_3",
+    "paired_queries": 20,
+    "raw_p": 0.4922069926558157,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "vector_bfs_4",
+    "paired_queries": 20,
+    "raw_p": 0.4922069926558157,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "vector_bfs_5",
+    "paired_queries": 20,
+    "raw_p": 0.4922069926558157,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "ppr",
+    "paired_queries": 20,
+    "raw_p": 0.8630820014544136,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "beam",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "greedy",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "community",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "standard_mcts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "weighted_sum",
+    "paired_queries": 20,
+    "raw_p": 0.13057001811573618,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "no_entropy",
+    "paired_queries": 20,
+    "raw_p": 0.06559969214707187,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "no_contracts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "no_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 100,
+    "competitor": "expanded_budget",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "vector",
+    "paired_queries": 20,
+    "raw_p": 0.4922069926558157,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "vector_bfs_2",
+    "paired_queries": 20,
+    "raw_p": 0.8607562233837367,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "vector_bfs_3",
+    "paired_queries": 20,
+    "raw_p": 0.9155825203905921,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "vector_bfs_4",
+    "paired_queries": 20,
+    "raw_p": 0.9155825203905921,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "vector_bfs_5",
+    "paired_queries": 20,
+    "raw_p": 0.9155825203905921,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "ppr",
+    "paired_queries": 20,
+    "raw_p": 0.5730427492875262,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "beam",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "greedy",
+    "paired_queries": 20,
+    "raw_p": 0.05878172135535886,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "community",
+    "paired_queries": 20,
+    "raw_p": 0.14077277337135014,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "standard_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.5735179375390823,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "weighted_sum",
+    "paired_queries": 20,
+    "raw_p": 0.7498050727300336,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "no_entropy",
+    "paired_queries": 20,
+    "raw_p": 0.06559969214707187,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "no_contracts",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "no_mcts",
+    "paired_queries": 20,
+    "raw_p": 0.0832645166635504,
+    "holm_p": 1.0
+  },
+  {
+    "budget": 200,
+    "competitor": "expanded_budget",
+    "paired_queries": 20,
+    "raw_p": 1.0,
+    "holm_p": 1.0
+  }
+]

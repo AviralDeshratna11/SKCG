@@ -1,6 +1,8 @@
 egpot:
   beam_width: 5
   max_hops: 5
+  # Optional cap on distinct admitted search nodes, including seeds.
+  node_budget: null
   mcts_enabled: true
   simulation_budget: 64
   ucb_c: 1.4
@@ -38,13 +40,28 @@ egpot:
     crowding: true
 
   traversal:
+    direction: both
     allowed_edges:
+      - CONTAINS
+      - DEFINES
       - CALLS
       - REFERENCES
       - IMPORTS
       - INHERITS
       - IMPLEMENTS
       - OVERRIDES
+      - EXTENDS
+      - POLYMORPHIC_CALL
+      - HTTP_CALLS
+      - CONSUMES
+      - DEFINES_RPC
+      - PASSES_ARG
+      - RETURNS
+      - FLOWS_TO
+      - MUTATES
+      - USES
+      - SEMANTIC_SIMILAR
+      - TOUCHES
 
   hub_suppression:
     enabled: true

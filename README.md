@@ -1,5 +1,16 @@
 # Semantic Code Knowledge Graph (SCKG)
 
+The deployed-graph compatibility update and benchmark definitions are documented
+in [Traversal architecture](docs/TRAVERSAL_ARCHITECTURE.md). This adds direct
+GRAFT/API JSON import, layer-aware Beam-MCTS, direction controls, and node budgets.
+
+```powershell
+$env:PYTHONPATH = "src"
+$env:SCKG_JSON_STORE = ".sckg/deployed.json"
+python -m sckg.cli.main import-graph tmp/deployed-graph.json
+python -m sckg.cli.main retrieve "Where is order payment status updated?" --strategy egpot --use-hash-sim --node-budget 60 --direction both --explain
+```
+
 SCKG Phase 1 is a code-only semantic repository graph MVP. It converts a Python
 repository into language-neutral intermediate representation (LNIR), persists it in a
 replaceable graph store, and retrieves graph-grounded context for coding tasks.
@@ -52,6 +63,39 @@ sckg retrieve "Trace why authentication refresh tokens are rejected" --strategy 
 sckg visualize --output .sckg/graph.html
 sckg visualize --symbol AuthenticationMiddleware.validate --depth 2
 ```
+
+### GRAFT graph construction with EG-POT traversal
+
+Install the optional GRAFT parsers, then select its layered build architecture:
+
+```bash
+python -m pip install -e ".[graft]"
+sckg index examples/auth_service_repo --architecture graft
+sckg retrieve "why are refresh tokens rejected" --repo examples/auth_service_repo --strategy egpot --use-hash-sim --explain
+```
+
+For a GRAFT workspace YAML containing multiple repositories:
+
+```bash
+sckg index path/to/workspace.yaml --workspace --architecture graft
+sckg retrieve "which service consumes ShippingService.GetQuote" --repo path/to/workspace --strategy egpot --use-hash-sim --explain
+```
+
+Add `--lineage --max-commits 200` to either GRAFT index command to include
+Git commit nodes and `TOUCHES` edges.
+
+GRAFT construction adds syntax (`Lsyn`), dependency (`Ldep`), dataflow (`Lflow`),
+semantic (`Lsem`), contract (`Lcontract`), and optional lineage (`Llineage`)
+edges. The adapter stores the
+original GRAFT IDs, layer labels, relation names, and hyperedge metadata in
+LNIR. EG-POT uses the same four objectives described in paper 2: semantic
+relevance, hop cost, contract consistency, and structural entropy times novelty.
+Its Pareto and Beam-MCTS traversal can cross GRAFT flow, polymorphic call,
+HTTP, and contract edges. The local JSON store is selected by default; set
+`SCKG_JSON_STORE` to keep separate indexes for different repositories.
+
+The reference builder is adapted from [SNK0-0/SCKG_Build](https://github.com/SNK0-0/SCKG_Build).
+Its optional dependencies are required only for `--architecture graft`.
 
 ## LNIR
 
@@ -143,12 +187,14 @@ vectors are reproducible across processes (unlike the previous Python `hash`).
 
 MCTS is enabled by default. Each query performs at most `simulation_budget`
 simulations, each bounded by `max_hops`, cycle checks, and estimated token budget.
-At each tree expansion, non-dominated sorting removes dominated candidates; the
-first front is capped by beam width using crowding distance. PUCT selects tree
+At each tree expansion, non-dominated sorting and explicit graph-layer
+representatives preserve bridge routes; crowding selection fills the remaining
+beam slots. PUCT selects tree
 branches, greedy rollouts explore unseen branches, and terminal scalarized rewards
 are backpropagated through every ancestor. `objective_weights` controls semantic,
 hop, contract, and information-gain weights, in that order. The returned beam
-contains the highest-valued sampled terminal paths. Pruning and finite simulation
+contains the highest-valued sampled paths, including useful intermediate stopping
+points. Pruning and finite simulation
 budgets can miss the global optimum; this implementation makes no paper benchmark
 or latency claims. `--no-mcts` retains the earlier per-hop Pareto beam algorithm.
 
@@ -179,8 +225,9 @@ The validation script writes `.sckg/week1-validation/comparison.json` and a trac
 for each provider. Tests cover a known target trajectory, reward backpropagation,
 configurable weights, Pareto pruning, repeatability, cycles, hop/token limits,
 CLI/YAML overrides, a 50-in-degree logger, and the embedding provider contract.
-Weeks 2-4 (baselines, benchmark corpora, experiments, and the LLM harness) are
-outside this implementation.
+The Online Boutique baseline/ablation matrix is now available in
+`scripts/run_graph_benchmarks.py`; downstream LLM evaluation remains outside
+this implementation. See the traversal architecture document for benchmark scope.
 
 ## Verify the update visually
 

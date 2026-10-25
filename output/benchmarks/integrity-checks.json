@@ -1,0 +1,16 @@
+{
+  "hashing": {
+    "unique_runs": 12000,
+    "budget_checks": "passed",
+    "exact_hit_checks": "passed",
+    "path_edge_checks": "passed",
+    "cycle_hop_start_checks": "passed"
+  },
+  "minilm": {
+    "unique_runs": 12000,
+    "budget_checks": "passed",
+    "exact_hit_checks": "passed",
+    "path_edge_checks": "passed",
+    "cycle_hop_start_checks": "passed"
+  }
+}

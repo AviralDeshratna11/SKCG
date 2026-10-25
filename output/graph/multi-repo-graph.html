@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCKG Graph</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #dbe3ee;
+      --accent: #2563eb;
+      --edge: #94a3b8;
+      --egpot: #dc2626;
+      --egpot-seed: #0891b2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      font: 14px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .app {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      height: 100vh;
+    }
+    aside {
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+      overflow: auto;
+    }
+    main {
+      position: relative;
+      min-width: 0;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .stats {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 650;
+      color: #334155;
+    }
+    input, select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 10px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      margin-top: 18px;
+    }
+    .egpot-summary {
+      display: none;
+      margin: 14px 0 0;
+      padding: 10px;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      background: #fff7f7;
+      color: #7f1d1d;
+    }
+    .egpot-summary.active {
+      display: block;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: #334155;
+    }
+    .swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+    .details {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: #334155;
+      word-break: break-word;
+    }
+    .details strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .details-row {
+      margin: 3px 0;
+    }
+    .details-code {
+      max-height: 220px;
+      overflow: auto;
+      margin: 10px 0 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+    .related-block {
+      margin-top: 12px;
+    }
+    .related-title {
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .related-list {
+      display: grid;
+      gap: 6px;
+    }
+    .related-item {
+      width: 100%;
+      height: auto;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 8px;
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+    }
+    .related-item:hover {
+      border-color: var(--accent);
+      background: #eff6ff;
+    }
+    .relation-chip {
+      display: inline-block;
+      margin-right: 6px;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .inspect-section {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .inspect-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #334155;
+      font-weight: 700;
+    }
+    .count {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .item-list {
+      display: grid;
+      gap: 6px;
+      max-height: 210px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .list-item {
+      width: 100%;
+      height: auto;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 8px;
+      background: #fff;
+      color: #1e293b;
+      text-align: left;
+      cursor: pointer;
+    }
+    .list-item:hover, .list-item.active {
+      border-color: var(--accent);
+      background: #eff6ff;
+    }
+    .item-name {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 650;
+    }
+    .item-meta {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      cursor: grab;
+      touch-action: none;
+      background:
+        linear-gradient(#e2e8f0 1px, transparent 1px),
+        linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    svg.dragging {
+      cursor: grabbing;
+    }
+    .link {
+      stroke: var(--edge);
+      stroke-opacity: 0.42;
+    }
+    .link-hit {
+      stroke: transparent;
+      stroke-width: 10px;
+      cursor: pointer;
+    }
+    .link.selected {
+      stroke: var(--accent);
+      stroke-opacity: 1;
+    }
+    .link.egpot {
+      stroke: var(--egpot);
+      stroke-opacity: 0.95;
+    }
+    .node circle {
+      stroke: #fff;
+      stroke-width: 0.9px;
+      opacity: 0.88;
+      cursor: pointer;
+    }
+    .node .hit-circle {
+      fill: transparent;
+      stroke: transparent;
+      cursor: pointer;
+    }
+    .node.selected circle:not(.hit-circle) {
+      stroke: var(--accent);
+      stroke-width: 1.8px;
+      opacity: 1;
+    }
+    .node.egpot circle:not(.hit-circle) {
+      stroke: var(--egpot);
+      stroke-width: 2.4px;
+      opacity: 1;
+    }
+    .node.egpot-seed circle:not(.hit-circle) {
+      stroke: var(--egpot-seed);
+      stroke-width: 2.4px;
+    }
+    .node text {
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 3px;
+      fill: #0f172a;
+      font-size: 11px;
+    }
+    .edge-label {
+      fill: #64748b;
+      font-size: 9px;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: #fff;
+      stroke-width: 3px;
+    }
+    .toolbar {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 12px;
+      background: #fff;
+      color: #1e293b;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); }
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      aside { max-height: 42vh; border-right: 0; border-bottom: 1px solid var(--line); }
+      svg { height: 58vh; }
+      .toolbar { top: auto; bottom: 12px; right: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <h1>SCKG Graph</h1>
+      <div class="stats" id="stats"></div>
+      <div class="egpot-summary" id="egpotSummary"></div>
+
+      <label for="search">Search symbols</label>
+      <input id="search" type="search" placeholder="Qualified name, file, kind">
+
+      <label for="relation">Relation filter</label>
+      <select id="relation">
+        <option value="">All relations</option>
+      </select>
+
+      <label for="layer">Architecture layer</label>
+      <select id="layer">
+        <option value="">All layers</option>
+      </select>
+
+      <div class="legend" id="legend"></div>
+      <div class="details" id="details">Select a node or edge to inspect it.</div>
+      <div class="inspect-section">
+        <div class="inspect-title">Nodes <span class="count" id="nodeCount"></span></div>
+        <div class="item-list" id="nodeList"></div>
+      </div>
+      <div class="inspect-section">
+        <div class="inspect-title">Edges <span class="count" id="edgeCount"></span></div>
+        <div class="item-list" id="edgeList"></div>
+      </div>
+    </aside>
+    <main>
+      <div class="toolbar">
+        <button id="zoomIn" title="Zoom in">+</button>
+        <button id="zoomOut" title="Zoom out">-</button>
+        <button id="fit" title="Fit graph to view">Fit</button>
+        <button id="labels" title="Toggle labels">Labels</button>
+        <button id="egpotOnly" title="Show only EG-POT-selected nodes and edges">EG-POT</button>
+      </div>
+      <svg id="graph" role="img" aria-label="Interactive semantic code graph"></svg>
+    </main>
+  </div>
+  <script>
+    const graph = {"nodes":[{"id":"sym_fe0bd63a6bbbd0b245e293e9db60fabc","label":"shipping.proto","qualifiedName":"file::shared/contracts/protos/shipping.proto","kind":"file","file":"contracts/protos/shipping.proto","line":1,"sourceText":"// Shared proto contract: contracts/protos/shipping.proto","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_cf7e0664896c7bb730d245b2a05403ff","label":"ShippingService","qualifiedName":"contract::ShippingService","kind":"code_chunk","file":"<workspace>","line":1,"sourceText":"","layer":"Lcontract","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_5a1ddeaa25989302bb975d9210be48b2","label":"GetQuote","qualifiedName":"contract::ShippingService.GetQuote","kind":"code_chunk","file":"<workspace>","line":1,"sourceText":"","layer":"Lcontract","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_6cebc124503f86f813186d83dc6da3a5","label":"ShipOrder","qualifiedName":"contract::ShippingService.ShipOrder","kind":"code_chunk","file":"<workspace>","line":1,"sourceText":"","layer":"Lcontract","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_b56467ebece02cd0066f67f84b04e114","label":"shipping.proto","qualifiedName":"file::order_service/protos/shipping.proto","kind":"file","file":"order_service/protos/shipping.proto","line":1,"sourceText":"// Proto contract file: protos/shipping.proto","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","label":"order_service.py","qualifiedName":"file::order_service/order_service.py","kind":"file","file":"order_service/order_service.py","line":1,"sourceText":"# File: order_service.py\n# Lines: 44","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_ef46a896717eb415eb9de027ed2feb31","label":"shipping_pb2_grpc","qualifiedName":"module::shipping_pb2_grpc","kind":"module","file":"order_service/order_service.py","line":1,"sourceText":"","layer":"Ldep","color":"#475569","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_7d09e45af947f675541e8cd8f1a93995","label":"App","qualifiedName":"order_service/order_service.py:App","kind":"class","file":"order_service/order_service.py","line":6,"sourceText":"class App:\n    def post(self, path):\n        return lambda f: f\n\n    def get(self, path):\n        return lambda f: f","layer":"Lsyn","color":"#f59e0b","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_10708440ade3d0b460adaa73bff31971","label":"post","qualifiedName":"order_service/order_service.py:App.post","kind":"function","file":"order_service/order_service.py","line":7,"sourceText":"    def post(self, path):\n        return lambda f: f","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_d3d9211924890510002d051127af533f","label":"self","qualifiedName":"order_service/order_service.py:App.post.var::self","kind":"variable","file":"order_service/order_service.py","line":7,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_5647a0fe31c09b3d74bb068798fd8496","label":"path","qualifiedName":"order_service/order_service.py:App.post.var::path","kind":"variable","file":"order_service/order_service.py","line":7,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_7c4b5323932f140ea68cee7a9225833a","label":"return","qualifiedName":"order_service/order_service.py:App.post.return::8","kind":"code_chunk","file":"order_service/order_service.py","line":8,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","label":"get","qualifiedName":"order_service/order_service.py:App.get","kind":"function","file":"order_service/order_service.py","line":10,"sourceText":"    def get(self, path):\n        return lambda f: f","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_9b113e43c9213820d8a07a57e8688415","label":"self","qualifiedName":"order_service/order_service.py:App.get.var::self","kind":"variable","file":"order_service/order_service.py","line":10,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_7c6acf63b6da76c09df8db9ed94c52df","label":"path","qualifiedName":"order_service/order_service.py:App.get.var::path","kind":"variable","file":"order_service/order_service.py","line":10,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_0ae2e8a4be4bba9fbc4f2cecb12149ae","label":"return","qualifiedName":"order_service/order_service.py:App.get.return::11","kind":"code_chunk","file":"order_service/order_service.py","line":11,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_008b657da821d1c3bd3f428983db0a83","label":"BaseOrderProcessor","qualifiedName":"order_service/order_service.py:BaseOrderProcessor","kind":"class","file":"order_service/order_service.py","line":18,"sourceText":"class BaseOrderProcessor:\n    \"\"\"Base order processor handling initial validation and lifecycle.\"\"\"\n\n    def process(self, order_id):\n        return {\"order_id\": order_id, \"status\": \"pending\"}","layer":"Lsyn","color":"#f59e0b","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_d894c515d3bc05656af37646417de47b","label":"process","qualifiedName":"order_service/order_service.py:BaseOrderProcessor.process","kind":"function","file":"order_service/order_service.py","line":21,"sourceText":"    def process(self, order_id):\n        return {\"order_id\": order_id, \"status\": \"pending\"}","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_5f2c9739233b2e9f2b81460613fc0cc9","label":"self","qualifiedName":"order_service/order_service.py:BaseOrderProcessor.process.var::self","kind":"variable","file":"order_service/order_service.py","line":21,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_3a2f7487638c05d15d6dd9aa6b358f8d","label":"order_id","qualifiedName":"order_service/order_service.py:BaseOrderProcessor.process.var::order_id","kind":"variable","file":"order_service/order_service.py","line":21,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_404f6e5e9c119bde3ba07cc470f7a798","label":"return","qualifiedName":"order_service/order_service.py:BaseOrderProcessor.process.return::22","kind":"code_chunk","file":"order_service/order_service.py","line":22,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_15369357fc04832bab2cdb70b8c7ff9f","label":"PriorityOrderProcessor","qualifiedName":"order_service/order_service.py:PriorityOrderProcessor","kind":"class","file":"order_service/order_service.py","line":25,"sourceText":"class PriorityOrderProcessor(BaseOrderProcessor):\n    \"\"\"High-priority processor with express fulfillment routing.\"\"\"\n\n    def process(self, order_id):\n        return {\"order_id\": order_id, \"status\": \"priority_dispatched\"}","layer":"Lsyn","color":"#f59e0b","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","label":"process","qualifiedName":"order_service/order_service.py:PriorityOrderProcessor.process","kind":"function","file":"order_service/order_service.py","line":28,"sourceText":"    def process(self, order_id):\n        return {\"order_id\": order_id, \"status\": \"priority_dispatched\"}","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_867bde57d3e7dba19b310a5052cba008","label":"self","qualifiedName":"order_service/order_service.py:PriorityOrderProcessor.process.var::self","kind":"variable","file":"order_service/order_service.py","line":28,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_36666a25d044eb5da62a90e75aeac409","label":"order_id","qualifiedName":"order_service/order_service.py:PriorityOrderProcessor.process.var::order_id","kind":"variable","file":"order_service/order_service.py","line":28,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_0911ab98b2167cc31b026cfea4198cad","label":"return","qualifiedName":"order_service/order_service.py:PriorityOrderProcessor.process.return::29","kind":"code_chunk","file":"order_service/order_service.py","line":29,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_4d2786a167f706b2af6273fba6bf3c71","label":"handle_checkout","qualifiedName":"order_service/order_service.py:handle_checkout","kind":"function","file":"order_service/order_service.py","line":33,"sourceText":"def handle_checkout():\n    \"\"\"Validates checkout cart, queries shipping quote via gRPC, and completes order.\"\"\"\n    processor = PriorityOrderProcessor()\n    order_res = processor.process(\"ORD-2026\")\n    quote = stub.GetQuote(None)\n    return {\"order\": order_res, \"quote\": quote, \"status\": \"confirmed\"}","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_f9402f50d705283327ff104c0dad76dd","label":"processor","qualifiedName":"order_service/order_service.py:handle_checkout.var::processor","kind":"variable","file":"order_service/order_service.py","line":35,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_fce1c915f88543bc30f7d2fd92914c4a","label":"order_res","qualifiedName":"order_service/order_service.py:handle_checkout.var::order_res","kind":"variable","file":"order_service/order_service.py","line":36,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_52c456c2e550e332ca44389eaf657212","label":"quote","qualifiedName":"order_service/order_service.py:handle_checkout.var::quote","kind":"variable","file":"order_service/order_service.py","line":37,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_8ef1a0831dcca2c8e3c999b0ec4baa95","label":"return","qualifiedName":"order_service/order_service.py:handle_checkout.return::38","kind":"code_chunk","file":"order_service/order_service.py","line":38,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_d47981f8871427a43e0fe7fe4e296bc3","label":"get_order_status","qualifiedName":"order_service/order_service.py:get_order_status","kind":"function","file":"order_service/order_service.py","line":42,"sourceText":"def get_order_status():\n    \"\"\"Returns status of a given order query.\"\"\"\n    return {\"status\": \"shipped\"}","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_846a2c4f51945c9cfbd645c4b56c009c","label":"return","qualifiedName":"order_service/order_service.py:get_order_status.return::44","kind":"code_chunk","file":"order_service/order_service.py","line":44,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_ef739b0a39102cf4207143de8c03c15a","label":"stub.GetQuote","qualifiedName":"external::stub.GetQuote","kind":"code_chunk","file":"order_service/order_service.py","line":1,"sourceText":"","layer":"Ldep","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_ff7392f2c081829cb4e26c96f2d30c78","label":"shipping.proto","qualifiedName":"file::shipping_service/protos/shipping.proto","kind":"file","file":"shipping_service/protos/shipping.proto","line":1,"sourceText":"// Proto contract file: protos/shipping.proto","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_03b019d1384bb1e7fe304f36ed78b3c1","label":"main.go","qualifiedName":"file::shipping_service/main.go","kind":"file","file":"shipping_service/main.go","line":1,"sourceText":"// File: main.go\n// Lines: 23","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_c56cee8c7c580c9dc31b888a5df2f609","label":"context","qualifiedName":"module::context","kind":"module","file":"shipping_service/main.go","line":1,"sourceText":"","layer":"Ldep","color":"#475569","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_100bf6e0ed771334ecfafc11de4abe56","label":"example.com/genproto","qualifiedName":"module::example.com/genproto","kind":"module","file":"shipping_service/main.go","line":1,"sourceText":"","layer":"Ldep","color":"#475569","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_014ac798c9c7bb64e81896476455aaba","label":"ShippingServer","qualifiedName":"shipping_service/main.go:ShippingServer","kind":"class","file":"shipping_service/main.go","line":8,"sourceText":"","layer":"Lsyn","color":"#f59e0b","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_350ed4f01524cb2221e7b416d77f6ee9","label":"GetQuote","qualifiedName":"shipping_service/main.go:ShippingServer.GetQuote","kind":"function","file":"shipping_service/main.go","line":10,"sourceText":"","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_728756b78ae7fcd14685dcfd3a40fe67","label":"ctx","qualifiedName":"shipping_service/main.go:ShippingServer.GetQuote.var::ctx","kind":"variable","file":"shipping_service/main.go","line":10,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_a82e27e07559bd8d635739c5bf6d1c75","label":"in","qualifiedName":"shipping_service/main.go:ShippingServer.GetQuote.var::in","kind":"variable","file":"shipping_service/main.go","line":10,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_6af57254dc0d25cbbacd7c657fe7b718","label":"return","qualifiedName":"shipping_service/main.go:ShippingServer.GetQuote.return::11","kind":"code_chunk","file":"shipping_service/main.go","line":11,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_a107b0afc071d321a1cbdd4c38e3e484","label":"ShipOrder","qualifiedName":"shipping_service/main.go:ShippingServer.ShipOrder","kind":"function","file":"shipping_service/main.go","line":14,"sourceText":"","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_ef5a7a164b701db92401d070fc09ad56","label":"ctx","qualifiedName":"shipping_service/main.go:ShippingServer.ShipOrder.var::ctx","kind":"variable","file":"shipping_service/main.go","line":14,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_8e382eb613b3c15e68e28b68a682fe60","label":"in","qualifiedName":"shipping_service/main.go:ShippingServer.ShipOrder.var::in","kind":"variable","file":"shipping_service/main.go","line":14,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_06091322f0a155fdab701e1cf51c1ed9","label":"cost","qualifiedName":"shipping_service/main.go:ShippingServer.ShipOrder.var::cost","kind":"variable","file":"shipping_service/main.go","line":15,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_370253997d24d7b47f8898de87db06c5","label":"return","qualifiedName":"shipping_service/main.go:ShippingServer.ShipOrder.return::17","kind":"code_chunk","file":"shipping_service/main.go","line":17,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_df0852a515f5d21032dc478031e4201f","label":"main","qualifiedName":"shipping_service/main.go:main","kind":"function","file":"shipping_service/main.go","line":20,"sourceText":"","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_1294eaa9a7f03a5a71a915cbd41c5748","label":"svc","qualifiedName":"shipping_service/main.go:main.var::svc","kind":"variable","file":"shipping_service/main.go","line":21,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_3ac1f7f6fcffd9d058a897b9fc702fec","label":"pb.RegisterShippingServiceServer","qualifiedName":"external::pb.RegisterShippingServiceServer","kind":"code_chunk","file":"shipping_service/main.go","line":1,"sourceText":"","layer":"Ldep","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_1bb843936052c3092c6257265bca1c29","label":"Checkout.tsx","qualifiedName":"file::web_frontend/src/Checkout.tsx","kind":"file","file":"web_frontend/src/Checkout.tsx","line":1,"sourceText":"// File: src/Checkout.tsx\n// Lines: 25","layer":"Lsyn","color":"#5b8def","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_e01a759eb20b939ef84f090519ef0f9f","label":"OrderItem","qualifiedName":"web_frontend/src/Checkout.tsx:OrderItem","kind":"class","file":"web_frontend/src/Checkout.tsx","line":1,"sourceText":"","layer":"Lsyn","color":"#f59e0b","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_f0fbf991d4963190c816eeb13ae03bc2","label":"submitCheckout","qualifiedName":"web_frontend/src/Checkout.tsx:submitCheckout","kind":"function","file":"web_frontend/src/Checkout.tsx","line":7,"sourceText":"","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_dcaf600bc51cf232b78d303a39bd3698","label":"items","qualifiedName":"web_frontend/src/Checkout.tsx:submitCheckout.var::items","kind":"variable","file":"web_frontend/src/Checkout.tsx","line":7,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_581d6ff8eea765a10b46bbb081f69bf6","label":"response","qualifiedName":"web_frontend/src/Checkout.tsx:submitCheckout.var::response","kind":"variable","file":"web_frontend/src/Checkout.tsx","line":8,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_cfbfa80e0a0ffef51088b8cf7f84aace","label":"data","qualifiedName":"web_frontend/src/Checkout.tsx:submitCheckout.var::data","kind":"variable","file":"web_frontend/src/Checkout.tsx","line":13,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_edc7c2617c4d6f77fc084db160edc420","label":"return","qualifiedName":"web_frontend/src/Checkout.tsx:submitCheckout.return::14","kind":"code_chunk","file":"web_frontend/src/Checkout.tsx","line":14,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_3ec9e481e72c1b3eb05f18a572492624","label":"ViewCheckout","qualifiedName":"web_frontend/src/Checkout.tsx:ViewCheckout","kind":"function","file":"web_frontend/src/Checkout.tsx","line":17,"sourceText":"","layer":"Lsyn","color":"#10b981","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_b912f03d7036b88959ad428619372e61","label":"props","qualifiedName":"web_frontend/src/Checkout.tsx:ViewCheckout.var::props","kind":"variable","file":"web_frontend/src/Checkout.tsx","line":17,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_4fd1fd6af0b0261193bcffaf96b827d3","label":"count","qualifiedName":"web_frontend/src/Checkout.tsx:ViewCheckout.var::count","kind":"variable","file":"web_frontend/src/Checkout.tsx","line":18,"sourceText":"","layer":"Lflow","color":"#ef4444","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_c8c6edb3780dbe839fe763e9ffcf5430","label":"return","qualifiedName":"web_frontend/src/Checkout.tsx:ViewCheckout.return::19","kind":"code_chunk","file":"web_frontend/src/Checkout.tsx","line":19,"sourceText":"","layer":"Lflow","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_cf590cf0ffcc6c1a2db062c3cda589bc","label":"fetch","qualifiedName":"external::fetch","kind":"code_chunk","file":"web_frontend/src/Checkout.tsx","line":1,"sourceText":"","layer":"Ldep","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_5e0659d7cb7080a9932717420037ee34","label":"JSON.stringify","qualifiedName":"external::JSON.stringify","kind":"code_chunk","file":"web_frontend/src/Checkout.tsx","line":1,"sourceText":"","layer":"Ldep","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]},{"id":"sym_717c859cbd010305c2b343617413aaca","label":"response.json","qualifiedName":"external::response.json","kind":"code_chunk","file":"web_frontend/src/Checkout.tsx","line":1,"sourceText":"","layer":"Ldep","color":"#6b7280","egpotSelected":false,"egpotSeed":false,"egpotObjectives":[]}],"links":[{"id":"rel_30bfb027da480d50c480da3cfd28a990","source":"sym_fe0bd63a6bbbd0b245e293e9db60fabc","target":"sym_cf7e0664896c7bb730d245b2a05403ff","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_2b4759405934b9cfb0ae2299b7c787bd","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_5a1ddeaa25989302bb975d9210be48b2","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_883ce34444336761f5cbf1c5a83d220a","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_5a1ddeaa25989302bb975d9210be48b2","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_bd0d7123e67408215ee4a15517e91e4a","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_5a1ddeaa25989302bb975d9210be48b2","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_7fd4148162554fa778fbaf9530302c33","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_6cebc124503f86f813186d83dc6da3a5","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_c3f6347fda702d8188d5a8c616644d00","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_6cebc124503f86f813186d83dc6da3a5","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_7940c680966f5f109e0cfa36f200bc04","source":"sym_cf7e0664896c7bb730d245b2a05403ff","target":"sym_6cebc124503f86f813186d83dc6da3a5","type":"DEFINES_RPC","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_3d66854bd3bf782386aa5d28e4921f47","source":"sym_5a1ddeaa25989302bb975d9210be48b2","target":"sym_350ed4f01524cb2221e7b416d77f6ee9","type":"SEMANTIC_SIMILAR","confidence":1.0,"provenance":"HEURISTIC","layer":"Lsem","egpotSelected":false},{"id":"rel_6d22452c1c76fd1e28333e4da662fd89","source":"sym_6cebc124503f86f813186d83dc6da3a5","target":"sym_a107b0afc071d321a1cbdd4c38e3e484","type":"SEMANTIC_SIMILAR","confidence":1.0,"provenance":"HEURISTIC","layer":"Lsem","egpotSelected":false},{"id":"rel_8df328a7d690fe6e32deeccde8048309","source":"sym_b56467ebece02cd0066f67f84b04e114","target":"sym_cf7e0664896c7bb730d245b2a05403ff","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_669a7898e5b2533193735caf76151cdb","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_ef46a896717eb415eb9de027ed2feb31","type":"IMPORTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_1fda6131066811aa6588e12c5c2629fe","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_7d09e45af947f675541e8cd8f1a93995","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_2f5753a4e26b4b429935a6e939768d02","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_008b657da821d1c3bd3f428983db0a83","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_96d236d42b9ce4fed4cd6b3e72a0a0ed","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_15369357fc04832bab2cdb70b8c7ff9f","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_85f7ccea1735317d64a82d217b52895f","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_4d2786a167f706b2af6273fba6bf3c71","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_3e8d7bbdb31edf5c5c8cccdef5d8aad3","source":"sym_0bf7f7b5f3c267a38b8466ae17e8d5fd","target":"sym_d47981f8871427a43e0fe7fe4e296bc3","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_806d567bbffc35a2aca3f09bdc11cddd","source":"sym_7d09e45af947f675541e8cd8f1a93995","target":"sym_10708440ade3d0b460adaa73bff31971","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_3d6cb7b4988f90ffb153bcab9fc498cc","source":"sym_7d09e45af947f675541e8cd8f1a93995","target":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_2bb0c26ede5325cd59021f43cbea64c4","source":"sym_7d09e45af947f675541e8cd8f1a93995","target":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","type":"SEMANTIC_SIMILAR","confidence":0.6826602076098365,"provenance":"HEURISTIC","layer":"Lsem","egpotSelected":false},{"id":"rel_df5c559d8b2a0ca284c78c34e6b3772a","source":"sym_10708440ade3d0b460adaa73bff31971","target":"sym_d3d9211924890510002d051127af533f","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_e072e67a756b89c46011d70a8d5faf76","source":"sym_10708440ade3d0b460adaa73bff31971","target":"sym_5647a0fe31c09b3d74bb068798fd8496","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_b2ca27aa0353d21922222619579e7289","source":"sym_10708440ade3d0b460adaa73bff31971","target":"sym_7c4b5323932f140ea68cee7a9225833a","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_afbcb7743b791f394f2ec3cbce8aefc1","source":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","target":"sym_9b113e43c9213820d8a07a57e8688415","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_41268c5f6e94aa26ec0918018e97dcc4","source":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","target":"sym_7c6acf63b6da76c09df8db9ed94c52df","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_aa162e307f2f16f8928fd7728bacf567","source":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","target":"sym_0ae2e8a4be4bba9fbc4f2cecb12149ae","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_9344aa98f409cdb83f507159279e27ac","source":"sym_008b657da821d1c3bd3f428983db0a83","target":"sym_d894c515d3bc05656af37646417de47b","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_9e0564acc8abad6f4b27d0c8ed7ee14d","source":"sym_d894c515d3bc05656af37646417de47b","target":"sym_5f2c9739233b2e9f2b81460613fc0cc9","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_3f6216a6c3bf660bf8c7ffa55df71853","source":"sym_d894c515d3bc05656af37646417de47b","target":"sym_3a2f7487638c05d15d6dd9aa6b358f8d","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_808ea31e3604b397bb3803c5b26ab5bd","source":"sym_d894c515d3bc05656af37646417de47b","target":"sym_3a2f7487638c05d15d6dd9aa6b358f8d","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_52d28d3326d4a90c3805c884471cbfe5","source":"sym_d894c515d3bc05656af37646417de47b","target":"sym_404f6e5e9c119bde3ba07cc470f7a798","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_af0cb20c8d3b65e011708be6f9fa25dc","source":"sym_d894c515d3bc05656af37646417de47b","target":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","type":"SEMANTIC_SIMILAR","confidence":0.9188814237774248,"provenance":"HEURISTIC","layer":"Lsem","egpotSelected":false},{"id":"rel_0c84d8d40993e4dd8e8a550e5d331bc1","source":"sym_15369357fc04832bab2cdb70b8c7ff9f","target":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_5975da63e409e12ebfd31e43426fd18c","source":"sym_15369357fc04832bab2cdb70b8c7ff9f","target":"sym_008b657da821d1c3bd3f428983db0a83","type":"EXTENDS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_22906f260e5e675be1a1e6ee8935700d","source":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","target":"sym_867bde57d3e7dba19b310a5052cba008","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_8b9a408937330865414aa753c9190c7c","source":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","target":"sym_36666a25d044eb5da62a90e75aeac409","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_6d612619a68ddea31b2aefe970551d60","source":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","target":"sym_36666a25d044eb5da62a90e75aeac409","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_55c4adcaf7f841e618e0bcdd5c3d25d7","source":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","target":"sym_0911ab98b2167cc31b026cfea4198cad","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_dd5de28cbdc9fab8d2255de3145d5fe8","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_f9402f50d705283327ff104c0dad76dd","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_57fdf7ad2d25d3668f9b2dfdb4f3591c","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_f9402f50d705283327ff104c0dad76dd","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_2311fdda270ca9ff1fef913fb244c2a7","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_fce1c915f88543bc30f7d2fd92914c4a","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_61478fdbb99a2379cc51702d211230be","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_fce1c915f88543bc30f7d2fd92914c4a","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_281981556ac8a81e6c7b72a7492c918e","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_52c456c2e550e332ca44389eaf657212","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_c91fc39f6e94eaf3c4bb725f94f941c4","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_52c456c2e550e332ca44389eaf657212","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_be1a281f870299c77fbee368078e1a06","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_8ef1a0831dcca2c8e3c999b0ec4baa95","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_efefb0661ebb41928443236c1a74c0e9","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_15369357fc04832bab2cdb70b8c7ff9f","type":"CALLS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_99a4d495f474e9c8d4614d47618d991a","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_6c53a0c1fa1f76d7678e3511d9746bf5","type":"CALLS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_18c725ef90f3fe8ac0c22cffef08fda2","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_ef739b0a39102cf4207143de8c03c15a","type":"CALLS","confidence":0.5,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_2dbd9dfbb5c72b40fd7606c55ffdff24","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_10708440ade3d0b460adaa73bff31971","type":"CALLS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_972cb0058f6442d152f8eeb7a9a579bf","source":"sym_4d2786a167f706b2af6273fba6bf3c71","target":"sym_5a1ddeaa25989302bb975d9210be48b2","type":"CONSUMES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_2eff684f19c192c0b97b5e7b27eb8152","source":"sym_d47981f8871427a43e0fe7fe4e296bc3","target":"sym_846a2c4f51945c9cfbd645c4b56c009c","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_37ff118f121f822b8347271cefa5ff67","source":"sym_d47981f8871427a43e0fe7fe4e296bc3","target":"sym_c837a1ceafc58905ec41ef8ddcb8cbc5","type":"CALLS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_171f4ee1478478f1848c11a5e2d28e1b","source":"sym_ff7392f2c081829cb4e26c96f2d30c78","target":"sym_cf7e0664896c7bb730d245b2a05403ff","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_fb575b1c544ba0b07fc889aedbb92c2c","source":"sym_03b019d1384bb1e7fe304f36ed78b3c1","target":"sym_c56cee8c7c580c9dc31b888a5df2f609","type":"IMPORTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_2aae1c7e76128f30916e00ed8c3f630d","source":"sym_03b019d1384bb1e7fe304f36ed78b3c1","target":"sym_100bf6e0ed771334ecfafc11de4abe56","type":"IMPORTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_aaec4b8e6a69bb8acb6c10662fbbdae4","source":"sym_03b019d1384bb1e7fe304f36ed78b3c1","target":"sym_014ac798c9c7bb64e81896476455aaba","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_4d03bde123a4784b637cf625f0405c1b","source":"sym_03b019d1384bb1e7fe304f36ed78b3c1","target":"sym_df0852a515f5d21032dc478031e4201f","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_67a85cdba056ed5c073670bb7cf427fb","source":"sym_014ac798c9c7bb64e81896476455aaba","target":"sym_350ed4f01524cb2221e7b416d77f6ee9","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_bf4d06c948f6a58f010b7d12efb5d993","source":"sym_014ac798c9c7bb64e81896476455aaba","target":"sym_a107b0afc071d321a1cbdd4c38e3e484","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_29ae879e9e798cdd551a05e6b3e3cacd","source":"sym_014ac798c9c7bb64e81896476455aaba","target":"sym_cf7e0664896c7bb730d245b2a05403ff","type":"IMPLEMENTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_988fb4702a12ba387019b282cc7c94cb","source":"sym_350ed4f01524cb2221e7b416d77f6ee9","target":"sym_728756b78ae7fcd14685dcfd3a40fe67","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_3b41795d733b4cdc2064e26746eb4c40","source":"sym_350ed4f01524cb2221e7b416d77f6ee9","target":"sym_a82e27e07559bd8d635739c5bf6d1c75","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_4a717211929995d9a87fbb4b3ded6809","source":"sym_350ed4f01524cb2221e7b416d77f6ee9","target":"sym_6af57254dc0d25cbbacd7c657fe7b718","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_4cfb979266ea22279885aa3ae08fe427","source":"sym_350ed4f01524cb2221e7b416d77f6ee9","target":"sym_5a1ddeaa25989302bb975d9210be48b2","type":"IMPLEMENTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_4a504d197a2d5bb3e746a7b734925fe2","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_ef5a7a164b701db92401d070fc09ad56","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_7194e1ec902dc5cb9f900535481a0ce1","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_8e382eb613b3c15e68e28b68a682fe60","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_00f633a1468d49b9542fba0dfdf93816","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_06091322f0a155fdab701e1cf51c1ed9","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_2d9051397c4946bc8f1019b53035c263","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_06091322f0a155fdab701e1cf51c1ed9","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_b78d6c8f982debda049d4dcf4bb4bc88","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_06091322f0a155fdab701e1cf51c1ed9","type":"MUTATES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_b8178760e272ca77f3227838c1f1dbfe","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_06091322f0a155fdab701e1cf51c1ed9","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_df6176bb37d6731b5c49e64cb3555109","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_06091322f0a155fdab701e1cf51c1ed9","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_191370369cbe48970250e2edda1dd050","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_370253997d24d7b47f8898de87db06c5","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_8bacefce952ef417e6046a5aa7f29859","source":"sym_a107b0afc071d321a1cbdd4c38e3e484","target":"sym_6cebc124503f86f813186d83dc6da3a5","type":"IMPLEMENTS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lcontract","egpotSelected":false},{"id":"rel_387509b2e09afeefdcedc609a2dfaecc","source":"sym_df0852a515f5d21032dc478031e4201f","target":"sym_1294eaa9a7f03a5a71a915cbd41c5748","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_db5640da8c9a235a1e95f7cdc16f4f73","source":"sym_df0852a515f5d21032dc478031e4201f","target":"sym_1294eaa9a7f03a5a71a915cbd41c5748","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_c9254750951918d2ff9b6a59e21a416d","source":"sym_df0852a515f5d21032dc478031e4201f","target":"sym_1294eaa9a7f03a5a71a915cbd41c5748","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_b7acce7952bd6dfb0cfb4a0bcdda996d","source":"sym_df0852a515f5d21032dc478031e4201f","target":"sym_3ac1f7f6fcffd9d058a897b9fc702fec","type":"CALLS","confidence":0.5,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_e279a9abbcb955c65fdc41630c6e3d4c","source":"sym_1bb843936052c3092c6257265bca1c29","target":"sym_e01a759eb20b939ef84f090519ef0f9f","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_66fb31877aa6984c612d7c1ee25ce155","source":"sym_1bb843936052c3092c6257265bca1c29","target":"sym_f0fbf991d4963190c816eeb13ae03bc2","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_5540d9dc777378a20252bd3af9926b10","source":"sym_1bb843936052c3092c6257265bca1c29","target":"sym_3ec9e481e72c1b3eb05f18a572492624","type":"CONTAINS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lsyn","egpotSelected":false},{"id":"rel_074d0ec0fc921d8b19cc44b5437353cd","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_dcaf600bc51cf232b78d303a39bd3698","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_025625423ff7ed10ddfe9ad8d40fe4e7","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_581d6ff8eea765a10b46bbb081f69bf6","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_3b36f2df3f967ca5e5d1c337f51ba664","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_581d6ff8eea765a10b46bbb081f69bf6","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_98c8c80ccca39e3f77024f81a787a9b6","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_cfbfa80e0a0ffef51088b8cf7f84aace","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_6eb55a4ff6457af134651612e0f0fb3d","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_cfbfa80e0a0ffef51088b8cf7f84aace","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_2aaa6e276903cec52d842b4e33aebfdd","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_edc7c2617c4d6f77fc084db160edc420","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_3be3c0043c851182c04fceb307b88049","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_cf590cf0ffcc6c1a2db062c3cda589bc","type":"CALLS","confidence":0.5,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_40c128c27e4ffd6f7f229381c5e22d76","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_5e0659d7cb7080a9932717420037ee34","type":"CALLS","confidence":0.5,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_4a6be7a115397e3a4c260238da145b1e","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_717c859cbd010305c2b343617413aaca","type":"CALLS","confidence":0.5,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_c96625caf476d19b33e7ed0b6b958aac","source":"sym_f0fbf991d4963190c816eeb13ae03bc2","target":"sym_4d2786a167f706b2af6273fba6bf3c71","type":"HTTP_CALLS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Ldep","egpotSelected":false},{"id":"rel_8fb0bb4542a77ab4ff8a06a64a8628b9","source":"sym_cfbfa80e0a0ffef51088b8cf7f84aace","target":"sym_edc7c2617c4d6f77fc084db160edc420","type":"FLOWS_TO","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_eadafacdb289032af48dfd594027b9a3","source":"sym_3ec9e481e72c1b3eb05f18a572492624","target":"sym_b912f03d7036b88959ad428619372e61","type":"PASSES_ARG","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_d74f9567cb6bd7d4bd2f0225b13852a6","source":"sym_3ec9e481e72c1b3eb05f18a572492624","target":"sym_b912f03d7036b88959ad428619372e61","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_77174f7a0fdf912cdc359e7924eb0621","source":"sym_3ec9e481e72c1b3eb05f18a572492624","target":"sym_b912f03d7036b88959ad428619372e61","type":"USES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_e1c46b30bb88a476b4974cbeb0eda839","source":"sym_3ec9e481e72c1b3eb05f18a572492624","target":"sym_4fd1fd6af0b0261193bcffaf96b827d3","type":"DEFINES","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_157944d839619130f1275bb1a592a84e","source":"sym_3ec9e481e72c1b3eb05f18a572492624","target":"sym_c8c6edb3780dbe839fe763e9ffcf5430","type":"RETURNS","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false},{"id":"rel_3a62b95f6e7fda8c8c6071bfe77449c6","source":"sym_b912f03d7036b88959ad428619372e61","target":"sym_c8c6edb3780dbe839fe763e9ffcf5430","type":"FLOWS_TO","confidence":1.0,"provenance":"STATIC_ANALYSIS","layer":"Lflow","egpotSelected":false}],"egpot":{"enabled":false,"runs":{},"query":"","stopReason":""}};
+    const svg = document.getElementById("graph");
+    const search = document.getElementById("search");
+    const relation = document.getElementById("relation");
+    const layer = document.getElementById("layer");
+    const details = document.getElementById("details");
+    const stats = document.getElementById("stats");
+    const nodeList = document.getElementById("nodeList");
+    const edgeList = document.getElementById("edgeList");
+    const nodeCount = document.getElementById("nodeCount");
+    const edgeCount = document.getElementById("edgeCount");
+    const labelsButton = document.getElementById("labels");
+    const egpotOnlyButton = document.getElementById("egpotOnly");
+    const egpotSummary = document.getElementById("egpotSummary");
+    const fitButton = document.getElementById("fit");
+    const zoomInButton = document.getElementById("zoomIn");
+    const zoomOutButton = document.getElementById("zoomOut");
+    const width = () => svg.clientWidth || 900;
+    const height = () => svg.clientHeight || 700;
+    let showLabels = true;
+    let transform = {x: 0, y: 0, k: 1};
+    let selectedNodeId = "";
+    let selectedLinkId = "";
+    let egpotOnly = false;
+    let viewport = null;
+    let latestActive = null;
+    let nodes = graph.nodes.map((node, index) => ({
+      ...node,
+      x: width() / 2 + Math.cos(index) * 220,
+      y: height() / 2 + Math.sin(index) * 220,
+      vx: 0,
+      vy: 0
+    }));
+    let links = graph.links;
+    const nodeById = new Map(nodes.map(node => [node.id, node]));
+    const relationTypes = [...new Set(links.map(link => link.type))].sort();
+    for (const type of relationTypes) {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      relation.appendChild(option);
+    }
+    const layers = [...new Set(links.map(link => link.layer).filter(Boolean))].sort();
+    for (const value of layers) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      layer.appendChild(option);
+    }
+    const kinds = [...new Map(nodes.map(node => [node.kind, node.color])).entries()].sort();
+    document.getElementById("legend").innerHTML = kinds.map(([kind, color]) =>
+      `<div class="legend-item"><span class="swatch" style="background:${color}"></span><span>${kind}</span></div>`
+    ).join("") + (graph.egpot.enabled ? `
+      <div class="legend-item"><span class="swatch" style="background:var(--egpot)"></span><span>EG-POT selected</span></div>
+      <div class="legend-item"><span class="swatch" style="background:var(--egpot-seed)"></span><span>EG-POT seed</span></div>
+    ` : "");
+    if (graph.egpot.enabled) {
+      const selectedCount = nodes.filter(node => node.egpotSelected).length;
+      const seedCount = nodes.filter(node => node.egpotSeed).length;
+      const edgeCount = links.filter(link => link.egpotSelected).length;
+      egpotSummary.classList.add("active");
+      egpotSummary.innerHTML = `<strong>EG-POT trace loaded</strong><br>${escapeHtml(graph.egpot.query)}<br>${selectedCount} selected nodes, ${edgeCount} selected edges, ${seedCount} seeds<br>Stop: ${escapeHtml(graph.egpot.stopReason)}`;
+    } else {
+      egpotOnlyButton.disabled = true;
+      egpotOnlyButton.title = "Regenerate with --egpot-trace to enable this overlay";
+    }
+
+    function filtered() {
+      const q = search.value.trim().toLowerCase();
+      const rel = relation.value;
+      const selectedLayer = layer.value;
+      const visibleNodes = new Set(nodes.filter(node => !q ||
+        `${node.label} ${node.qualifiedName} ${node.file} ${node.kind}`.toLowerCase().includes(q)
+      ).filter(node => !egpotOnly || node.egpotSelected || node.egpotSeed).map(node => node.id));
+      const visibleLinks = links.filter(link =>
+        (!rel || link.type === rel) &&
+        (!selectedLayer || link.layer === selectedLayer) &&
+        (!egpotOnly || link.egpotSelected) &&
+        visibleNodes.has(link.source) &&
+        visibleNodes.has(link.target)
+      );
+      for (const link of visibleLinks) {
+        visibleNodes.add(link.source);
+        visibleNodes.add(link.target);
+      }
+      if (rel || selectedLayer) {
+        const connected = new Set(visibleLinks.flatMap(link => [link.source, link.target]));
+        for (const id of visibleNodes) {
+          if (!connected.has(id)) visibleNodes.delete(id);
+        }
+      }
+      return {
+        nodes: nodes.filter(node => visibleNodes.has(node.id)),
+        links: visibleLinks
+      };
+    }
+
+    function tick(activeNodes, activeLinks) {
+      const centerX = width() / 2;
+      const centerY = height() / 2;
+      const iterations = activeNodes.length > 260 ? 2 : 18;
+      const useRepulsion = activeNodes.length <= 260;
+      for (let i = 0; i < iterations; i++) {
+        for (const node of activeNodes) {
+          node.vx += (centerX - node.x) * 0.0009;
+          node.vy += (centerY - node.y) * 0.0009;
+        }
+        if (useRepulsion) {
+          for (let a = 0; a < activeNodes.length; a++) {
+            for (let b = a + 1; b < activeNodes.length; b++) {
+              const left = activeNodes[a];
+              const right = activeNodes[b];
+              const dx = left.x - right.x || 0.1;
+              const dy = left.y - right.y || 0.1;
+              const d2 = Math.max(80, dx * dx + dy * dy);
+              const force = 260 / d2;
+              left.vx += dx * force;
+              left.vy += dy * force;
+              right.vx -= dx * force;
+              right.vy -= dy * force;
+            }
+          }
+        }
+        for (const link of activeLinks) {
+          const source = nodeById.get(link.source);
+          const target = nodeById.get(link.target);
+          if (!source || !target) continue;
+          const dx = target.x - source.x;
+          const dy = target.y - source.y;
+          const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+          const force = (distance - 140) * 0.004;
+          source.vx += dx / distance * force;
+          source.vy += dy / distance * force;
+          target.vx -= dx / distance * force;
+          target.vy -= dy / distance * force;
+        }
+        for (const node of activeNodes) {
+          node.vx *= 0.72;
+          node.vy *= 0.72;
+          node.x += node.vx;
+          node.y += node.vy;
+        }
+      }
+    }
+
+    function render(runLayout = true) {
+      const active = filtered();
+      latestActive = active;
+      stats.textContent = `${active.nodes.length} of ${nodes.length} nodes, ${active.links.length} of ${links.length} relations`;
+      if (runLayout) tick(active.nodes, active.links);
+      renderLists(active);
+      svg.innerHTML = "";
+      viewport = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      applyViewport();
+      svg.appendChild(viewport);
+
+      for (const link of active.links) {
+        const source = nodeById.get(link.source);
+        const target = nodeById.get(link.target);
+        if (!source || !target) continue;
+        const hit = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        hit.setAttribute("class", "link-hit");
+        hit.setAttribute("x1", source.x);
+        hit.setAttribute("y1", source.y);
+        hit.setAttribute("x2", target.x);
+        hit.setAttribute("y2", target.y);
+        hit.addEventListener("pointerdown", event => event.stopPropagation());
+        hit.addEventListener("click", event => {
+          event.stopPropagation();
+          showEdge(link);
+        });
+        viewport.appendChild(hit);
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("class", `link${link.egpotSelected ? " egpot" : ""}${link.id === selectedLinkId ? " selected" : ""}`);
+        line.setAttribute("x1", source.x);
+        line.setAttribute("y1", source.y);
+        line.setAttribute("x2", target.x);
+        line.setAttribute("y2", target.y);
+        line.setAttribute("stroke-width", link.id === selectedLinkId ? 2.2 : link.egpotSelected ? 2.6 : Math.max(0.45, link.confidence * 0.95));
+        line.addEventListener("pointerdown", event => event.stopPropagation());
+        line.addEventListener("click", event => {
+          event.stopPropagation();
+          showEdge(link);
+        });
+        viewport.appendChild(line);
+        if (showLabels && active.links.length < 180) {
+          const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          label.setAttribute("class", "edge-label");
+          label.setAttribute("x", (source.x + target.x) / 2);
+          label.setAttribute("y", (source.y + target.y) / 2);
+          label.textContent = link.type;
+          viewport.appendChild(label);
+        }
+      }
+
+      for (const node of active.nodes) {
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttribute("class", `node${node.egpotSelected ? " egpot" : ""}${node.egpotSeed ? " egpot-seed" : ""}${node.id === selectedNodeId ? " selected" : ""}`);
+        group.setAttribute("transform", `translate(${node.x} ${node.y})`);
+        group.addEventListener("pointerdown", event => event.stopPropagation());
+        group.addEventListener("click", event => {
+          event.stopPropagation();
+          showNode(node);
+        });
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", radius(node));
+        circle.setAttribute("fill", node.color);
+        group.appendChild(circle);
+        const hitCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        hitCircle.setAttribute("class", "hit-circle");
+        hitCircle.setAttribute("r", radius(node) + 8);
+        group.appendChild(hitCircle);
+        if (showLabels && active.nodes.length < 260) {
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", radius(node) + 4);
+          text.setAttribute("y", 4);
+          text.textContent = node.label;
+          group.appendChild(text);
+        }
+        viewport.appendChild(group);
+      }
+    }
+
+    function applyViewport() {
+      if (!viewport) return;
+      viewport.setAttribute("transform", `translate(${transform.x} ${transform.y}) scale(${transform.k})`);
+    }
+
+    function radius(node) {
+      if (node.kind === "file") return 4.4;
+      if (node.kind === "class") return 4.1;
+      if (node.kind === "method" || node.kind === "function") return 3.8;
+      return 3.2;
+    }
+
+    function showNode(node) {
+      selectedNodeId = node.id;
+      selectedLinkId = "";
+      const incoming = links.filter(link => link.target === node.id);
+      const outgoing = links.filter(link => link.source === node.id);
+      details.innerHTML = `
+        <strong>${escapeHtml(node.qualifiedName)}</strong>
+        <div class="details-row">Kind: ${escapeHtml(node.kind)}</div>
+        ${node.layer ? `<div class="details-row">Layer: ${escapeHtml(node.layer)}</div>` : ""}
+        <div class="details-row">File: ${escapeHtml(node.file)}:${escapeHtml(node.line)}</div>
+        ${node.egpotSeed ? `<div class="details-row">EG-POT: seed node</div>` : ""}
+        ${node.egpotSelected ? `<div class="details-row">EG-POT: selected context node</div>` : ""}
+        ${node.egpotObjectives?.length ? `<div class="details-row">Objectives: sem=${Number(node.egpotObjectives[0]).toFixed(3)}, hop=${Number(node.egpotObjectives[1]).toFixed(3)}, contract=${Number(node.egpotObjectives[2]).toFixed(3)}, info=${Number(node.egpotObjectives[3]).toFixed(3)}</div>` : ""}
+        <div class="details-row">Related: ${incoming.length} incoming, ${outgoing.length} outgoing</div>
+        ${node.sourceText ? `<pre class="details-code">${escapeHtml(node.sourceText)}</pre>` : ""}
+        ${relatedBlock("Outgoing", outgoing, "target")}
+        ${relatedBlock("Incoming", incoming, "source")}
+      `;
+      bindRelatedButtons();
+      render(false);
+    }
+
+    function showEdge(link) {
+      selectedLinkId = link.id;
+      selectedNodeId = "";
+      const source = nodeById.get(link.source);
+      const target = nodeById.get(link.target);
+      details.innerHTML = `<strong>${link.type}</strong>
+        <div>Layer: ${escapeHtml(link.layer || "unassigned")}</div>
+        <div>${source?.qualifiedName || link.source}</div>
+        <div>to ${target?.qualifiedName || link.target}</div>
+        <div>Confidence: ${Number(link.confidence).toFixed(2)}</div>
+        <div>Provenance: ${link.provenance}</div>
+        <div>EG-POT selected: ${link.egpotSelected ? "yes" : "no"}</div>`;
+      render(false);
+    }
+
+    function relatedBlock(title, relatedLinks, oppositeKey) {
+      if (!relatedLinks.length) return "";
+      return `
+        <div class="related-block">
+          <div class="related-title">${escapeHtml(title)}</div>
+          <div class="related-list">
+            ${relatedLinks.slice(0, 20).map(link => {
+              const related = nodeById.get(link[oppositeKey]);
+              return `
+                <button class="related-item" data-related-node="${escapeAttr(related?.id || "")}">
+                  <span class="relation-chip">${escapeHtml(link.type)}</span>
+                  <span>${escapeHtml(related?.qualifiedName || link[oppositeKey])}</span>
+                </button>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindRelatedButtons() {
+      for (const button of details.querySelectorAll("[data-related-node]")) {
+        button.addEventListener("click", () => {
+          const node = nodeById.get(button.getAttribute("data-related-node"));
+          if (node) {
+            centerOn(node);
+            showNode(node);
+          }
+        });
+      }
+    }
+
+    function renderLists(active) {
+      nodeCount.textContent = `${active.nodes.length} visible`;
+      edgeCount.textContent = `${active.links.length} visible`;
+      nodeList.innerHTML = active.nodes.slice(0, 120).map(node => `
+        <button class="list-item${node.id === selectedNodeId ? " active" : ""}" data-node="${escapeAttr(node.id)}">
+          <span class="item-name">${escapeHtml(node.label)}</span>
+          <span class="item-meta">${escapeHtml(node.kind)} · ${escapeHtml(node.qualifiedName)}</span>
+        </button>
+      `).join("");
+      edgeList.innerHTML = active.links.slice(0, 120).map(link => {
+        const source = nodeById.get(link.source);
+        const target = nodeById.get(link.target);
+        return `
+          <button class="list-item${link.id === selectedLinkId ? " active" : ""}" data-edge="${escapeAttr(link.id)}">
+            <span class="item-name">${escapeHtml(link.type)}</span>
+            <span class="item-meta">${escapeHtml(link.layer || "")} · ${escapeHtml(source?.label || link.source)} -> ${escapeHtml(target?.label || link.target)}</span>
+          </button>
+        `;
+      }).join("");
+      for (const button of nodeList.querySelectorAll("[data-node]")) {
+        button.addEventListener("click", () => {
+          const node = nodeById.get(button.getAttribute("data-node"));
+          if (node) {
+            centerOn(node);
+            showNode(node);
+          }
+        });
+      }
+      for (const button of edgeList.querySelectorAll("[data-edge]")) {
+        button.addEventListener("click", () => {
+          const link = links.find(item => item.id === button.getAttribute("data-edge"));
+          if (link) {
+            const source = nodeById.get(link.source);
+            const target = nodeById.get(link.target);
+            if (source && target) centerOn({x: (source.x + target.x) / 2, y: (source.y + target.y) / 2});
+            showEdge(link);
+          }
+        });
+      }
+    }
+
+    function centerOn(point) {
+      transform.x = width() / 2 - point.x * transform.k;
+      transform.y = height() / 2 - point.y * transform.k;
+      applyViewport();
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function fit() {
+      const active = filtered().nodes;
+      if (!active.length) return;
+      const xs = active.map(node => node.x);
+      const ys = active.map(node => node.y);
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      const minY = Math.min(...ys), maxY = Math.max(...ys);
+      const graphWidth = Math.max(1, maxX - minX);
+      const graphHeight = Math.max(1, maxY - minY);
+      const k = Math.min(width() / graphWidth, height() / graphHeight, 1.4) * 0.82;
+      transform = {
+        k,
+        x: width() / 2 - (minX + graphWidth / 2) * k,
+        y: height() / 2 - (minY + graphHeight / 2) * k
+      };
+      render(false);
+    }
+
+    function zoomAt(clientX, clientY, scaleFactor) {
+      const bounds = svg.getBoundingClientRect();
+      const cursorX = clientX - bounds.left;
+      const cursorY = clientY - bounds.top;
+      const worldX = (cursorX - transform.x) / transform.k;
+      const worldY = (cursorY - transform.y) / transform.k;
+      const nextK = Math.max(0.18, Math.min(5.5, transform.k * scaleFactor));
+      transform.x = cursorX - worldX * nextK;
+      transform.y = cursorY - worldY * nextK;
+      transform.k = nextK;
+      applyViewport();
+    }
+
+    function zoomAtCenter(scaleFactor) {
+      const bounds = svg.getBoundingClientRect();
+      zoomAt(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2, scaleFactor);
+    }
+
+    let dragging = null;
+    svg.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      dragging = {
+        pointerX: event.clientX,
+        pointerY: event.clientY,
+        startX: transform.x,
+        startY: transform.y
+      };
+      svg.classList.add("dragging");
+      svg.setPointerCapture(event.pointerId);
+    });
+    svg.addEventListener("pointermove", event => {
+      if (!dragging) return;
+      transform.x = dragging.startX + event.clientX - dragging.pointerX;
+      transform.y = dragging.startY + event.clientY - dragging.pointerY;
+      applyViewport();
+    });
+    svg.addEventListener("pointerup", () => {
+      dragging = null;
+      svg.classList.remove("dragging");
+    });
+    svg.addEventListener("pointercancel", () => {
+      dragging = null;
+      svg.classList.remove("dragging");
+    });
+    svg.addEventListener("wheel", event => {
+      event.preventDefault();
+      const scaleFactor = Math.exp(-event.deltaY * 0.0015);
+      zoomAt(event.clientX, event.clientY, scaleFactor);
+    }, {passive: false});
+    search.addEventListener("input", () => render(true));
+    relation.addEventListener("change", () => render(true));
+    layer.addEventListener("change", () => render(true));
+    labelsButton.addEventListener("click", () => {
+      showLabels = !showLabels;
+      render(false);
+    });
+    egpotOnlyButton.addEventListener("click", () => {
+      egpotOnly = !egpotOnly;
+      egpotOnlyButton.textContent = egpotOnly ? "All" : "EG-POT";
+      render(true);
+      setTimeout(fit, 20);
+    });
+    zoomInButton.addEventListener("click", () => zoomAtCenter(1.2));
+    zoomOutButton.addEventListener("click", () => zoomAtCenter(1 / 1.2));
+    fitButton.addEventListener("click", fit);
+    window.addEventListener("resize", () => render(false));
+    render();
+    setTimeout(fit, 60);
+    // Replay saved retrieval evidence. Controls never pretend to rerun inference.
+(() => {
+  const runs = Object.entries(graph.egpot.runs || {});
+  if (!runs.length) return;
+  const style = document.createElement('style');
+  style.textContent = `
+    .run-panel { margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+    .run-panel h2 { font-size:16px; margin:0 0 4px; }
+    .run-note { color:#64748b; font-size:12px; margin:6px 0; }
+    .run-metrics { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+    .run-metric { padding:9px; background:#f1f5f9; border-radius:7px; overflow-wrap:anywhere; }
+    .run-metric b { display:block; color:#0f172a; font-size:17px; }
+    .run-metric span { font-size:11px; color:#475569; }
+    .run-path { line-height:1.8; overflow-wrap:anywhere; padding:8px; background:#eff6ff; border-radius:6px; }
+    .run-tree { max-height:190px; overflow:auto; }
+    .run-tree button { margin:3px 0; width:100%; height:auto; padding:8px; text-align:left; overflow-wrap:anywhere; }
+    .node.hub circle:not(.hit-circle) { stroke:#d97706; stroke-width:3; stroke-dasharray:2 2; }
+    .node.suppressed circle:not(.hit-circle) { fill:#fef3c7; opacity:.5; }
+    .run-panel input[type=range] { padding:0; }
+  `;
+  document.head.appendChild(style);
+  const panel = document.createElement('section');
+  panel.className = 'run-panel';
+  panel.innerHTML = `
+    <h2>Search evidence</h2>
+    <p class="run-note">Recorded runs from the Python retrieval engine. Choose a run to compare its actual results.</p>
+    <label for="runSelect">Recorded run</label><select id="runSelect"></select>
+    <div class="run-metrics" id="runMetrics"></div>
+    <p class="run-note" id="hubStatus"></p>
+    <p class="run-note" id="runDifference"></p>
+    <label for="pathSelect">Selected trajectory</label><select id="pathSelect"></select>
+    <label for="hopStep" id="hopLabel">Replay hops</label>
+    <input id="hopStep" type="range" min="0" value="0" aria-label="Replay hops">
+    <div class="run-path" id="pathDescription"></div>
+    <p class="run-note">Red outlines: selected path. Cyan: seed. Amber dashes: high in-degree hub. Use All to inspect excluded nodes.</p>
+    <details><summary>MCTS visits and values</summary><p class="run-note">Each row is a trajectory-tree state. Values are mean backpropagated rewards; they are not probabilities.</p><div class="run-tree" id="runTree"></div></details>
+  `;
+  egpotSummary.after(panel);
+  const el = id => document.getElementById(id);
+  const runSelect = el('runSelect'), pathSelect = el('pathSelect'), hopStep = el('hopStep');
+  runs.forEach(([label], index) => runSelect.add(new Option(label, String(index))));
+  let current = runs[0][1], paths = [], suppressed = new Set();
+  const incoming = new Map(nodes.map(n => [n.id, new Set()]));
+  for (const edge of links) if (edge.source !== edge.target) incoming.get(edge.target)?.add(edge.source);
+  const name = id => nodeById.get(id)?.qualifiedName || id;
+  const metric = (label, value) => `<div class="run-metric"><b>${escapeHtml(value)}</b><span>${escapeHtml(label)}</span></div>`;
+  const originalShowNode = showNode;
+  showNode = function(node) {
+    originalShowNode(node);
+    const row = document.createElement('div');
+    row.className = 'details-row';
+    row.textContent = `In-degree in displayed graph: ${incoming.get(node.id)?.size || 0}. ${suppressed.has(node.id) ? 'Excluded as a hub in this run.' : node.isHub ? 'Above this run’s hub threshold.' : ''}`;
+    details.prepend(row);
+    decorate();
+  };
+  const originalRender = render;
+  render = function(...args) { originalRender(...args); decorate(); };
+  function decorate() {
+    if (!latestActive) return;
+    // Node groups are created in the same order as filtered graph nodes.
+    const visible = filtered().nodes;
+    svg.querySelectorAll('g.node').forEach((group, index) => {
+      const node = visible[index];
+      group.classList.toggle('hub', Boolean(node?.isHub));
+      group.classList.toggle('suppressed', suppressed.has(node?.id));
+    });
+  }
+  function chooseRun() {
+    current = runs[Number(runSelect.value)][1];
+    const searchInfo = current.search || {};
+    suppressed = new Set(searchInfo.suppressed_hubs || []);
+    const selected = new Set(current.selected_nodes || []);
+    const baseline = new Set(runs[runs.length - 1][1].selected_nodes || []);
+    const added = [...selected].filter(id => !baseline.has(id)).length;
+    const removed = [...baseline].filter(id => !selected.has(id)).length;
+    const mode = searchInfo.mcts_enabled === true ? 'Beam-MCTS' : searchInfo.mcts_enabled === false ? 'Pareto beam' : 'Legacy trace';
+    el('runMetrics').innerHTML = metric('Search', mode) + metric('Simulations', searchInfo.simulations ?? 'Not recorded') + metric('Embedding provider', searchInfo.embedding_provider ?? 'Not recorded') + metric('Selected nodes', selected.size);
+    egpotSummary.innerHTML = `<strong>EG-POT trace loaded</strong><br>${escapeHtml(current.query || '')}<br>Stop: ${escapeHtml(current.stop_reason || '')}`;
+    el('hubStatus').textContent = searchInfo.hub_suppression_enabled === undefined
+      ? 'Hub settings were not recorded in this older trace.'
+      : `Hub suppression ${searchInfo.hub_suppression_enabled ? 'ON' : 'OFF'} · threshold > ${searchInfo.hub_degree_threshold} · ${suppressed.size} encountered hubs excluded.`;
+    el('runDifference').textContent = runs.length > 1 ? `Compared with ${runs[runs.length - 1][0]}: ${added} added, ${removed} removed nodes. Paths can change even when node sets match.` : '';
+    nodes.forEach(node => {
+      node.egpotSeed = (current.seeds || []).includes(node.id);
+      node.egpotObjectives = current.objective_scores?.[node.id] || [];
+      node.isHub = searchInfo.hub_degree_threshold !== undefined && incoming.get(node.id).size > searchInfo.hub_degree_threshold;
+    });
+    paths = current.trajectories || [];
+    pathSelect.replaceChildren(new Option('All selected context', '-1'));
+    paths.forEach((path, index) => pathSelect.add(new Option(`Path ${index + 1} · ${path.edges.length} hops · ${name(path.nodes[path.nodes.length - 1])}`, String(index))));
+    pathSelect.value = '-1';
+    const tree = searchInfo.tree || [];
+    el('runTree').replaceChildren();
+    if (!tree.length) el('runTree').textContent = 'No MCTS tree recorded in this run.';
+    tree.forEach(row => {
+      const button = document.createElement('button');
+      button.textContent = `${row.path.map(name).join(' → ')} | visits ${row.visits} | value ${Number(row.mean_value).toFixed(3)} | prior ${Number(row.prior).toFixed(3)}`;
+      button.onclick = () => { const node = nodeById.get(row.path[row.path.length - 1]); if (node) showNode(node); };
+      el('runTree').appendChild(button);
+    });
+    selectedNodeId = ''; selectedLinkId = '';
+    details.textContent = 'Select a node or edge to inspect it.';
+    choosePath();
+  }
+  function choosePath() {
+    const path = paths[Number(pathSelect.value)];
+    hopStep.disabled = !path;
+    hopStep.max = path ? path.edges.length : 0;
+    hopStep.value = hopStep.max;
+    replay();
+  }
+  function replay() {
+    const path = paths[Number(pathSelect.value)], step = Number(hopStep.value);
+    const nodeIds = new Set(path ? path.nodes.slice(0, step + 1) : current.selected_nodes || []);
+    const edgeIds = new Set(path ? path.edges.slice(0, step) : current.selected_edges || []);
+    nodes.forEach(node => {
+      node.egpotSelected = nodeIds.has(node.id);
+      node.egpotSeed = (current.seeds || []).includes(node.id) && (!path || nodeIds.has(node.id));
+    });
+    links.forEach(link => { link.egpotSelected = edgeIds.has(link.id); });
+    el('hopLabel').textContent = path ? `Replay: hop ${step} of ${path.edges.length}` : 'Replay hops';
+    el('pathDescription').textContent = path ? path.nodes.slice(0, step + 1).map(name).join(' → ') : paths.length ? 'Choose a trajectory, then drag the slider to follow each hop.' : 'This older trace stores the selected subgraph but no ordered paths.';
+    render(false); fit();
+  }
+  runSelect.addEventListener('change', chooseRun);
+  pathSelect.addEventListener('change', choosePath);
+  hopStep.addEventListener('input', replay);
+  egpotOnly = true;
+  egpotOnlyButton.textContent = 'All';
+  chooseRun();
+})();
+
+  </script>
+</body>
+</html>

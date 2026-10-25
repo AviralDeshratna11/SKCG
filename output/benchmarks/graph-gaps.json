@@ -1,0 +1,170 @@
+{
+  "missing_expected_edges": [
+    {
+      "query_id": "link-02-explicit",
+      "source": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "target": "contract::ProductCatalogService.ListProducts",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+        "graph_line": 41,
+        "source_occurrence_lines": [
+          30,
+          41,
+          44
+        ]
+      }
+    },
+    {
+      "query_id": "link-03-explicit",
+      "source": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "target": "contract::ProductCatalogService.GetProduct",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+        "graph_line": 47,
+        "source_occurrence_lines": [
+          47
+        ]
+      }
+    },
+    {
+      "query_id": "link-04-explicit",
+      "source": "shippingservice/main.go:server.GetQuote",
+      "target": "contract::ShippingService.GetQuote",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\shippingservice\\main.go",
+        "graph_line": 119,
+        "source_occurrence_lines": [
+          118,
+          119,
+          120,
+          121,
+          131
+        ]
+      }
+    },
+    {
+      "query_id": "link-05-explicit",
+      "source": "recommendationservice/recommendation_server.py:RecommendationService.ListRecommendations",
+      "target": "contract::RecommendationService.ListRecommendations",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\recommendationservice\\recommendation_server.py",
+        "graph_line": 70,
+        "source_occurrence_lines": [
+          70,
+          82,
+          84
+        ]
+      }
+    },
+    {
+      "query_id": "link-06-explicit",
+      "source": "checkoutservice/main.go:checkoutService.PlaceOrder",
+      "target": "contract::CheckoutService.PlaceOrder",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\checkoutservice\\main.go",
+        "graph_line": 230,
+        "source_occurrence_lines": [
+          230,
+          231,
+          278
+        ]
+      }
+    },
+    {
+      "query_id": "link-07-explicit",
+      "source": "productcatalogservice/product_catalog.go:productCatalog.GetProduct",
+      "target": "contract::ProductCatalogService.GetProduct",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+        "graph_line": 47,
+        "source_occurrence_lines": [
+          47
+        ]
+      }
+    },
+    {
+      "query_id": "link-10-explicit",
+      "source": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "target": "contract::EmailService.SendOrderConfirmation",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\emailservice\\email_server.py",
+        "graph_line": 86,
+        "source_occurrence_lines": [
+          86,
+          109
+        ]
+      }
+    },
+    {
+      "query_id": "link-11-explicit",
+      "source": "shippingservice/main.go:server.ShipOrder",
+      "target": "contract::ShippingService.ShipOrder",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\shippingservice\\main.go",
+        "graph_line": 142,
+        "source_occurrence_lines": [
+          140,
+          142,
+          143,
+          144,
+          150
+        ]
+      }
+    },
+    {
+      "query_id": "link-12-explicit",
+      "source": "shippingservice/main.go:server.GetQuote",
+      "target": "contract::ShippingService.GetQuote",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\shippingservice\\main.go",
+        "graph_line": 119,
+        "source_occurrence_lines": [
+          118,
+          119,
+          120,
+          121,
+          131
+        ]
+      }
+    },
+    {
+      "query_id": "link-13-explicit",
+      "source": "productcatalogservice/product_catalog.go:productCatalog.ListProducts",
+      "target": "contract::ProductCatalogService.ListProducts",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\productcatalogservice\\product_catalog.go",
+        "graph_line": 41,
+        "source_occurrence_lines": [
+          30,
+          41,
+          44
+        ]
+      }
+    },
+    {
+      "query_id": "link-14-explicit",
+      "source": "emailservice/email_server.py:EmailService.SendOrderConfirmation",
+      "target": "contract::EmailService.SendOrderConfirmation",
+      "relation": "IMPLEMENTS",
+      "source_evidence": {
+        "source": "tmp\\online-boutique\\src\\emailservice\\email_server.py",
+        "graph_line": 86,
+        "source_occurrence_lines": [
+          86,
+          109
+        ]
+      }
+    }
+  ],
+  "edges_injected": false
+}
